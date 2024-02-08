@@ -11,7 +11,7 @@ playerX = 960 #defines the starting x position
 playerHeight = 75
 playerWidht = 50
 player = pygame.Rect((playerX,playerY,playerWidht,playerHeight))
-music_volume = 0.5 #defines the volume of the music
+music_volume = 0.4 #defines the volume of the music
 music_active = False
 clock = pygame.time.Clock() #initializes the clock
 fps = 120 #defines the amount of frames per second
@@ -20,15 +20,14 @@ movementspeed = 4
 #loads the music file for the start screen
 pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
-#tries to load the image
+#tries to load textures
 try:
     original_background = pygame.image.load('Textures/StartScreen/Temp.png')
     background = pygame.transform.scale(original_background, resolution)
     location = "startscreen"
 #if loading fails it will print that in the console
 except pygame.error as e:
-    print("Afbeelding kon niet worden geladen:", e)
-
+    print("startscreen couldn't load")
 
 run = True
 while run:
