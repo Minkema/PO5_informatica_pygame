@@ -1,8 +1,8 @@
-import pygame
-import player
+import pygame, player, scenehandler
 
 if __name__ == "__main__":
 
+    #Initiates some pygame functions
     pygame.init()
     pygame.mixer.init()
 
@@ -14,53 +14,35 @@ if __name__ == "__main__":
     playerHeight = (150/1920) * resolution[0]
     screen = pygame.display.set_mode((resolution))
     
-    music_volume = 0.4 #defines the volume of the music
-    music_active = False
     clock = pygame.time.Clock() #initializes the clock
     fps = 120 #defines the amount of frames per second
 
-    #loads the music file for the start screen
-    pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
-
-    #tries to load textures
-    try:
-        original_background = pygame.image.load('Textures/StartScreen/homescreen.png')
-        background = pygame.transform.scale(original_background, resolution)
-        location = "startscreen"
-    #if loading fails it will print that in the console
-    except pygame.error as e:
-        print("startscreen couldn't load")
+    scenehandler.initSceneHandler(resolution, screen)
+    
+    scenehandler.loadScene("startscreen")
 
     run = True
     firstLoadUp = True
+
+    #Main game loop
     while run:
-        #draws the background. You can change the background anywhere in the code by using [background = pygame.image.load('location')]
-        screen.blit(background, (0,0))
+        scenehandler.mainGameLoop()
 
         #For loading the player on the first startup and loading values for player script in player script
         if firstLoadUp:
-            player.loadFirstValues(screen, resolution)
+            player.loadFirstValues()
             player.loadPlayer(playerX, playerY, playerWidht, playerHeight)
             firstLoadUp = False
 
-        #draws the player
+        #Comments about these functions are at the functions declarations
         player.drawPlayer()
-        #moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
+        
         player.update_movement()
 
         player.drawerPlayerTexture()
+
         #updates the screen so you can see changes
         pygame.display.update()
-
-        if (location == "startscreen") and (music_active == False):
-            pygame.mixer.music.play()
-            print("music started")
-            music_active = True
-        if (pygame.mixer.music.get_busy()) and (location == "startscreen"):
-            pygame.time.Clock().tick(100)
-        else:
-            pygame.mixer.music.stop()
-            music_active = False
 
         clock.tick(fps)
 
