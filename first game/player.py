@@ -1,4 +1,4 @@
-import pygame
+import pygame, scenehandler
 
 resolution = 0
 movementspeed = 4
@@ -14,13 +14,14 @@ character = 0
 playerX = 0
 playerY = 0
 
-def loadFirstValues(screenImport, resolutionImport):
+#Initiates some variables that are necessary for the player script
+def loadFirstValues():
     global screen, resolution
-    resolution = resolutionImport
-    screen = screenImport
+    resolution = scenehandler.resolution
+    screen = scenehandler.screen
 
 def loadPlayer(x, y, Widht, Height):
-    #Global so that in can be changed not local
+    #Loads all the necessary variables inside the player script so that they can be used later
     global player, playerHeight, playerWidht, playerX, playerY, character
     player = pygame.Rect((x,y,Widht,Height))
     playerHeight = Height
@@ -29,20 +30,21 @@ def loadPlayer(x, y, Widht, Height):
     playerY = y
 
     try:
-        original_character = pygame.image.load('Textures/Player/player.png')
-        character = pygame.transform.scale(original_character, (playerWidht,playerHeight))
+        character_image = pygame.image.load('Textures/Player/player.png')
+        character = pygame.transform.scale(character_image, (playerWidht,playerHeight))
         #if loading fails it will print that in the console
     except:
         print("player texture couldn't load")
     player = character.get_rect()
     player.center = (playerX+(playerWidht/2), playerY+(playerHeight/2))
 
+#Draws the player
 def drawPlayer():
     pygame.draw.rect(screen, (255, 0, 100), player)
 
+#Moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
 def update_movement():
     key = pygame.key.get_pressed()
-    #Global so that in can be changed not local
     global playerX, playerY
     if (key[pygame.K_a] == True) and (playerX > 0):
         player.move_ip(-movementspeed,0)
@@ -57,5 +59,6 @@ def update_movement():
         player.move_ip(movementspeed,0)
         playerX += movementspeed
 
+#Draws the acual texture on the player
 def drawerPlayerTexture():
     screen.blit(character, player)
