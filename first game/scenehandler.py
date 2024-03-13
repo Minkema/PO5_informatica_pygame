@@ -1,15 +1,9 @@
-import pygame
+import pygame, settings, player
 
 currentScene = "default"
-resolution = 0
-screen = 0
+resolution = settings.resolution
+screen = settings.screen
 music_active = False
-
-#Initiates some variables that are necessary for the scene handler
-def initSceneHandler(resolutionImport, screenImport):
-    global resolution, screen
-    resolution = resolutionImport
-    screen = screenImport
 
 
 def loadScene(scenename):
@@ -21,6 +15,7 @@ def loadScene(scenename):
         loadStartScene()
 
 def loadStartScene():
+    player.loadPlayer()
     #Loads the music in pygame so that it can be used later in the scene loop
     pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
@@ -39,6 +34,12 @@ def mainGameLoop():
 
     #All scene specific stuff in the main game loop needs to be handled here
     if currentScene == "startscreen":
+        
+        #Comments about these functions are at the functions declarations
+        player.drawPlayer()
+        player.update_movement()
+        player.drawerPlayerTexture()
+
         global music_active
 
         #loads the music file for this specific scene
