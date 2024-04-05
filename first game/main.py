@@ -5,13 +5,13 @@ if __name__ == "__main__":
     #Initiates some pygame functions
     pygame.init()
     pygame.mixer.init()
-    pygame.display.set_caption("Space Traversers")
     
     clock = pygame.time.Clock() #initializes the clock
     
     #Inits the scene
-    scenehandler.loadScene("startscreen")
-
+    # scenehandler.loadScene("startscreen")
+    scenehandler.loadScene("testScene")
+    
     run = True
     
     #Main game loop

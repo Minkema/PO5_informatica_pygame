@@ -1,4 +1,5 @@
-import pygame, settings
+import pygame, settings, scenehandler
+from astroids import Astroid
 
 resolution = settings.resolution
 screen = settings.screen
@@ -17,7 +18,6 @@ player = pygame.Rect((playerX,playerY,playerWidht,playerHeight))
 
 
 def loadPlayer():
-
     #trys to load texture on player
     global character
     try:
@@ -36,7 +36,7 @@ def drawPlayer():
 #Moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
 def update_movement():
     key = pygame.key.get_pressed()
-    global playerX, playerY
+    global playerX, playerY, character
 
     if (key[pygame.K_a] == True) and (playerX > 0):
         player.move_ip(-movementspeed,0)
