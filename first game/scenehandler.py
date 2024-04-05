@@ -4,6 +4,8 @@ currentScene = "default"
 resolution = settings.resolution
 screen = settings.screen
 music_active = False
+button_surface = pygame.Surface((150, 50))
+button_rect = pygame.Rect(125, 125, 150, 50)
 
 
 def loadScene(scenename):
@@ -15,12 +17,13 @@ def loadScene(scenename):
         loadStartScene()
 
 def loadStartScene():
-    player.loadPlayer()
     #Loads the music in pygame so that it can be used later in the scene loop
     pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
-    #Tries to load the specific background textures
+    #defining variables
     global background
+
+    #Tries to load the specific background textures
     try:
         background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
         background = pygame.transform.scale(background_image, resolution)
@@ -36,9 +39,6 @@ def mainGameLoop():
     if currentScene == "startscreen":
         
         #Comments about these functions are at the functions declarations
-        player.drawPlayer()
-        player.update_movement()
-        player.drawerPlayerTexture()
 
         global music_active
 
