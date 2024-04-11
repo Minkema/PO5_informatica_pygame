@@ -5,8 +5,12 @@ currentScene = "default"
 resolution = settings.resolution
 screen = settings.screen
 music_active = False
-
 astroids = []
+isDead = False
+
+Startbutton = 0
+Settingsbutton = 0
+Exitbutton = 0
 
 def loadScene(scenename):
     #All specific sceneloading stuff needs to be handeld here
@@ -17,9 +21,13 @@ def loadScene(scenename):
         loadStartScene()
     if(scenename == "testScene"):
         loadTestScene()
+    if(scenename == "gameOver"):
+        loadGameOverScene()
 
 def loadTestScene():
     player.loadPlayer()
+    #Want de speler is altijd alive als hij spawned
+    isDead = False
     #Tries to load the specific background textures
     global background
     try:
@@ -30,34 +38,28 @@ def loadTestScene():
         print("startscreen couldn't load")
 
 def loadStartScene():
-    #defining variables
-    global background
-    global StartButton_img
-    global SettingsButton_img
-    global ExitButton_img
-    global Startbutton
-    global Settingsbutton
-    global Exitbutton
-
     #Loads the music in pygame so that it can be used later in the scene loop
     pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
-    
+
     #Tries to load the specific background textures
+    global background
+    global Startbutton 
+    global Settingsbutton 
+    global Exitbutton
     try:
         background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
         background = pygame.transform.scale(background_image, resolution)
     #if loading fails it will print that in the console
     except pygame.error as e:
-        print("startscreen couldn't load: ", e)
+        print("startscreen couldn't load")
 
-    #loading button textures
     try:
         StartButton_img = pygame.image.load('Textures/StartScreen/StartButton.png').convert_alpha()
         SettingsButton_img = pygame.image.load('Textures/StartScreen/SettingsButton.png').convert_alpha()
         ExitButton_img = pygame.image.load('Textures/StartScreen/ExitButton.png').convert_alpha()
     except pygame.error as e:
         print("button images couldn't load")
-    
+
 
     #button class
     class Button():
@@ -75,11 +77,18 @@ def loadStartScene():
     Settingsbutton = Button(((100/1920)*resolution[0]),((600/1920)*resolution[0]), SettingsButton_img)
     Exitbutton = Button(((100/1920)*resolution[0]),((400/1920)*resolution[0]), ExitButton_img)
 
-    Startbutton.draw()
-    Settingsbutton.draw()
-    Exitbutton.draw()
+def loadGameOverScene():
+    global astroids
+    print("you lasted " + str((pygame.time.get_ticks() - startTime) / 1000) + " seconds")
+    astroids = []
 
-last_execution_time = pygame.time.get_ticks()
+#Starttick zodat we de tijd kunnen berekenen als je klaar bent
+startTime = pygame.time.get_ticks()
+
+#Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
+laatsteTick = startTime
+
+#Daadswerkelijke interval
 interval = 1000
 
 def mainGameLoop():
@@ -98,7 +107,11 @@ def mainGameLoop():
         else:
             pygame.mixer.music.stop()
             music_active = False
-    
+
+        Startbutton.draw()
+        Settingsbutton.draw()
+        Exitbutton.draw()
+
     if currentScene == "testScene":
         #Comments about these functions are at the functions declarations
         player.drawPlayer()
@@ -109,9 +122,24 @@ def mainGameLoop():
         current_time = pygame.time.get_ticks()
         if current_time - last_execution_time >= interval:
             for i in range(5):
-                last_execution_time = current_time
-                astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4))
-                astroids.append(astroid)
+                if (not isDead):
+                    last_execution_time = current_time
+                    astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4))
+                    astroids.append(astroid)
+
+        checkCol()
 
         for astroid in astroids:
             astroid.draw()
+
+    if currentScene == "gameOver":
+        screen.fill((0,0,0))
+    
+def checkCol():
+    global isDead
+    playerRect = player.player
+    for astroid in astroids:
+        if playerRect.colliderect(astroid.x, astroid.y, 20*2, 20*2):
+            isDead = True
+            loadScene("gameOver")
+            
