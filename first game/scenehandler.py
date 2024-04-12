@@ -117,13 +117,13 @@ def mainGameLoop():
         player.drawPlayer()
         player.update_movement()
         player.drawerPlayerTexture()
-        global last_execution_time
+        global laatsteTick
 
         current_time = pygame.time.get_ticks()
-        if current_time - last_execution_time >= interval:
+        if current_time - laatsteTick >= interval:
             for i in range(5):
                 if (not isDead):
-                    last_execution_time = current_time
+                    laatsteTick = current_time
                     astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4))
                     astroids.append(astroid)
 
