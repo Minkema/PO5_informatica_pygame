@@ -1,4 +1,4 @@
-import pygame, settings, player, random
+import pygame, settings, player, random, sys
 from astroids import Astroid
 
 currentScene = "default"
@@ -65,6 +65,7 @@ def loadStartScene():
     class Button():
         def __init__(self, x, y, image):
             self.image = image
+            self.image = pygame.transform.scale(self.image, (600, 150))
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
 
@@ -72,10 +73,25 @@ def loadStartScene():
             #draw button on screen
             screen.blit(self.image, (self.rect.x, self.rect.y))
 
+        def isclicked(self, pos):
+            if self.rect.collidepoint(pos):
+                return True
+            return False
+
     #creating button instance
-    Startbutton = Button(((100/1920)*resolution[0]),((800/1920)*resolution[0]), StartButton_img)
-    Settingsbutton = Button(((100/1920)*resolution[0]),((600/1920)*resolution[0]), SettingsButton_img)
-    Exitbutton = Button(((100/1920)*resolution[0]),((400/1920)*resolution[0]), ExitButton_img)
+    Startbutton = Button(((300/1920)*resolution[0]),((400/1920)*resolution[0]), StartButton_img)
+    Settingsbutton = Button(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
+    Exitbutton = Button(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
+
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if Startbutton.isclicked(event):
+                loadScene("testscene")
+            elif Settingsbutton.isclicked(event):
+                loadScene("")
+            elif Exitbutton.isclicked(event):
+                pygame.quit()
+                sys.exit()
 
 def loadGameOverScene():
     global astroids
