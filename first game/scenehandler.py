@@ -68,30 +68,32 @@ def loadStartScene():
             self.image = pygame.transform.scale(self.image, (600, 150))
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
+            self.Clicked = False
 
         def draw(self):
+            Action = False
+
+            #get mouse position
+            mousepos = pygame.mouse.get_pos()
+
+            #check if mouse is touching buttons and if its clicking
+            if self.rect.collidepoint(mousepos):
+                if pygame.mouse.get_pressed()[0] and self.Clicked == False:
+                    self.Clicked = True
+                    Action =True
+                    
+            if not pygame.mouse.get_pressed()[0]:
+                self.Clicked = False
+
             #draw button on screen
             screen.blit(self.image, (self.rect.x, self.rect.y))
 
-        def isclicked(self, pos):
-            if self.rect.collidepoint(pos):
-                return True
-            return False
+            return Action
 
     #creating button instance
     Startbutton = Button(((300/1920)*resolution[0]),((400/1920)*resolution[0]), StartButton_img)
     Settingsbutton = Button(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
     Exitbutton = Button(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
-
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if Startbutton.isclicked(event):
-                loadScene("testscene")
-            elif Settingsbutton.isclicked(event):
-                loadScene("")
-            elif Exitbutton.isclicked(event):
-                pygame.quit()
-                sys.exit()
 
 def loadGameOverScene():
     global astroids
@@ -127,6 +129,19 @@ def mainGameLoop():
         Startbutton.draw()
         Settingsbutton.draw()
         Exitbutton.draw()
+
+        #checks if buttons are pressed
+        if Startbutton.draw():
+            loadScene("testScene")
+            print("startbutton pressed")
+        
+        if Settingsbutton.draw():
+            loadScene("")
+            print("settingsbutton pressed")
+
+        if Exitbutton.draw():
+            print("exitbutton pressed")
+            pygame.quit()
 
     if currentScene == "testScene":
         #Comments about these functions are at the functions declarations
