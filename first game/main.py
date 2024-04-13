@@ -9,8 +9,8 @@ if __name__ == "__main__":
     clock = pygame.time.Clock() #initializes the clock
     
     #Inits the scene
-    # scenehandler.loadScene("startscreen")
-    scenehandler.loadScene("testScene")
+    scenehandler.loadScene("startscreen")
+    # scenehandler.loadScene("testScene")
     
     run = True
     
