@@ -5,6 +5,7 @@ if __name__ == "__main__":
     #Initiates some pygame functions
     pygame.init()
     pygame.mixer.init()
+    pygame.display.set_caption("Space Traversers")
     
     clock = pygame.time.Clock() #initializes the clock
     
@@ -22,7 +23,7 @@ if __name__ == "__main__":
         pygame.display.update()
         clock.tick(settings.fps)
 
-        #this makes sure that when you click the X your game closes
+        #this handles all the types of events that can happen
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
