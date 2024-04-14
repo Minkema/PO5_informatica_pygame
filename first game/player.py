@@ -50,6 +50,9 @@ def update_movement():
     if (key[pygame.K_d] == True) and (playerX < (resolution[0]-playerWidht)):
         player.move_ip(movementspeed,0)
         playerX += movementspeed
+    if (key[pygame.K_p] == True and not scenehandler.stopAstroids):
+        scenehandler.stopAstroids = True
+        scenehandler.stopAstroidsTijd = pygame.time.get_ticks()
 
 #Draws the acual texture on the player
 def drawerPlayerTexture():
