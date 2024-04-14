@@ -21,8 +21,6 @@ squaresRect = pygame.Rect(settings.resolution[0] / 2 - squareWidth / 2, settings
 intervalBetweenSquares = 250
 startEersteGame = 0
 
-
-
 def loadRandomPuzzel():
     randomPuzzel = random.uniform(1,numberOfPuzzels)
 
@@ -47,6 +45,7 @@ def mainGameLoop():
     
     elif(currentPuzzel == "eerste"):
         currentTime = pygame.time.get_ticks()
+        
         #De 3000 staat voor de 3 seconde die verloren gaan in de countdown. Die 3 seconden moeten we negeren
         timeInBetween = currentTime - startEersteGame - 3000
 

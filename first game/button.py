@@ -17,6 +17,7 @@ class ImageButton():
         
         def checkClicked(self):
             #Als de muisknop niet wordt ingedrukt kunnen we direct uit deze functie returnen met false want dan kan een knop nooit worden ingedrukt
+
             if not pygame.mouse.get_pressed()[0]:
                 self.Clicked = False
                 return False

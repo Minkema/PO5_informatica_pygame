@@ -73,9 +73,9 @@ def loadStartScene():
         print("button images couldn't load")
 
     #creating button instance
-    Startbutton = ImageButton(((100/1920)*resolution[0]),((800/1920)*resolution[0]), StartButton_img)
-    Settingsbutton = ImageButton(((100/1920)*resolution[0]),((600/1920)*resolution[0]), SettingsButton_img)
-    Exitbutton = ImageButton(((100/1920)*resolution[0]),((400/1920)*resolution[0]), ExitButton_img)
+    Startbutton = ImageButton(((300/1920)*resolution[0]),((400/1920)*resolution[0]), StartButton_img)
+    Settingsbutton = ImageButton(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
+    Exitbutton = ImageButton(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
 
 def loadGameOverScene():
     global astroids
