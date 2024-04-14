@@ -1,7 +1,7 @@
 import pygame, settings, scenehandler
 from astroids import Astroid
+from settings import resolution
 
-resolution = settings.resolution
 screen = settings.screen
 
 #init all player values
@@ -50,6 +50,8 @@ def update_movement():
     if (key[pygame.K_d] == True) and (playerX < (resolution[0]-playerWidht)):
         player.move_ip(movementspeed,0)
         playerX += movementspeed
+    
+    #MOET UIT DE GAME ALS HIJ AF IS, DIT ZORGT ERVOOR DAT JE EEN PUZZEL IN JE SCHERM KRIJGT ALS JE P INDRUKT
     if (key[pygame.K_p] == True and not scenehandler.stopAstroids):
         scenehandler.stopAstroids = True
         scenehandler.stopAstroidsTijd = pygame.time.get_ticks()
