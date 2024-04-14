@@ -1,4 +1,4 @@
-import pygame, scenehandler, settings
+import pygame, scenehandler, settings, puzzels, textUI
 
 if __name__ == "__main__":
 
@@ -6,19 +6,22 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init()
     pygame.display.set_caption("Space Traversers")
-    
+
+    #Kijk in het testUI.py bestand om te zien wat dit doet
+    textUI.init()
+        
     clock = pygame.time.Clock() #initializes the clock
     
     #Inits the scene
     scenehandler.loadScene("startscreen")
-    # scenehandler.loadScene("testScene")
-    
+    #scenehandler.loadScene("testScene")
+
     run = True
     
     #Main game loop
     while run:
         scenehandler.mainGameLoop()
-
+        puzzels.mainGameLoop()
         #updates the screen so you can see changes
         pygame.display.update()
         clock.tick(settings.fps)
