@@ -1,4 +1,4 @@
-import pygame, scenehandler, settings
+import pygame, scenehandler, settings, puzzels
 
 if __name__ == "__main__":
 
