@@ -142,6 +142,7 @@ def mainGameLoop():
         #Oke dit kan confusing zijn maar stopAstroids = true zodra een puzzel wordt gecalled. afterStopAstroids is pas true na een bepaalde timer zodat de player nog ff wat tijd heeft 
         #om astroids te ontwijken
         if(stopAstroids and not afterStopAstroids):
+            textUI.drawText("Er komt een puzzel aan wees ready!", textUI.testFont, (225,225,225), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
             if (current_time - stopAstroidsTijd >= 2000):
                 puzzels.loadRandomPuzzel()
                 afterStopAstroids = True

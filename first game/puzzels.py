@@ -90,10 +90,7 @@ def checkSolEerste():
     #Player heeft ze goed opgelost
     if(currentNum == 4):
         currentPuzzel = "none"
-        scenehandler.stopAstroids = False
-        scenehandler.afterStopAstroids = False
-        scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
-        scenehandler.stopAstroidsTijd = 0
+        ResetEerstePuzzel()
         return
 
     #Check continue of knoppen worden geclicked
@@ -119,6 +116,19 @@ def checkSolEerste():
     if(not currentNum == 0):
         for i in range(0, currentNum):
             drawText(str(i+1), textUI.testFont, (255,255,255), posOfButtonsX[i] + 25, posOfButtonsY[i] + 25)
+
+def ResetEerstePuzzel():
+    global currentNum, posOfButtonsX, posOfButtonsY, buttonsClicked
+    currentNum = 0
+
+    posOfButtonsX = [0,0,0,0]
+    posOfButtonsY = [0,0,0,0]
+
+    buttonsClicked = [False, False, False, False]
+    scenehandler.stopAstroids = False
+    scenehandler.afterStopAstroids = False
+    scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
+    scenehandler.stopAstroidsTijd = 0
 
 def startCountdown(timeInBetween):
     if(timeInBetween < 1000):
