@@ -31,6 +31,8 @@ def loadScene(scenename):
         loadTestScene()
     if(scenename == "gameOver"):
         loadGameOverScene()
+    if(scenename == "SettingsScreen"):
+        LoadSettingsScene()
 
 def loadTestScene():
     player.loadPlayer()
@@ -53,11 +55,11 @@ def loadStartScene():
     #Loads the music in pygame so that it can be used later in the scene loop
     pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
-    #Tries to load the specific background textures
     global background
     global Startbutton 
     global Settingsbutton 
     global Exitbutton
+    #Tries to load the specific background textures
     try:
         background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
         background = pygame.transform.scale(background_image, resolution)
@@ -77,6 +79,17 @@ def loadStartScene():
     Settingsbutton = ImageButton(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
     Exitbutton = ImageButton(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
 
+def LoadSettingsScene():
+    global background
+    try:
+        background_image = pygame.image.load('Textures/Settings/Settings_Background.png')
+        background = pygame.transform.scale(background_image, resolution)
+    #if loading fails it will print that in the console
+    except pygame.error as e:
+        print("startscreen couldn't load")
+
+    pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
+
 def loadGameOverScene():
     global astroids
     astroids = []
@@ -92,18 +105,6 @@ def mainGameLoop():
     #All scene specific stuff in the main game loop needs to be handled here
     if currentScene == "startscreen":
 
-        global music_active
-
-        #loads the music file for this specific scene
-        if music_active == False:
-            pygame.mixer.music.play()
-            music_active = True
-        if pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(100)
-        else:
-            pygame.mixer.music.stop()
-            music_active = False
-
         #Draw de daadwerkelijke knoppen
         Startbutton.draw()
         Settingsbutton.draw()
@@ -114,7 +115,7 @@ def mainGameLoop():
             loadScene("testScene")
 
         if Settingsbutton.checkClicked():
-            print("settingsbutton pressed")
+            loadScene("SettingsScreen")
 
         #Invoked de quit event zodat het eigenlijk lijkt alsof de speler op het kruisje heeft geclickt en de main function alles stopt
         if Exitbutton.checkClicked():
@@ -171,6 +172,18 @@ def mainGameLoop():
 
     if currentScene == "gameOver":
         screen.fill((0,0,0))
+
+    global music_active
+
+    #loads the music file for this specific scene
+    if music_active == False:
+        pygame.mixer.music.play()
+        music_active = True
+    if pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(100)
+    else:
+        pygame.mixer.music.stop()
+        music_active = False
 
 def checkCol():
     global isDead
