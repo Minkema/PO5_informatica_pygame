@@ -136,7 +136,10 @@ def mainGameLoop():
             for i in range(5):
                 if (not isDead and not stopAstroids):
                     laatsteTick = current_time
-                    astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4))
+                    if(random.randint(0, 25) == 5):
+                        astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4), True)
+                    else:
+                        astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4), False)
                     astroids.append(astroid)
         
         #Oke dit kan confusing zijn maar stopAstroids = true zodra een puzzel wordt gecalled. afterStopAstroids is pas true na een bepaalde timer zodat de player nog ff wat tijd heeft 
@@ -151,19 +154,40 @@ def mainGameLoop():
         #De timer moet niet worden laten zien als we bezig zijn met een puzzel
         if not stopAstroids:
             textUI.drawText(str(round((current_time - startTime - delayTime) / 1000, 1)) + "s", textUI.testFont , (255,255,255), resolution[0] / 2, resolution[1] / 2 + resolution[1] / 1080 *-400)
+        
+        #Lijst van astroids die de volgende frame weg moeten
+        listOfDeletedAstroids = []
 
-        for astroid in astroids:
+        for i in range(len(astroids)):
+            astroid = astroids[i]
+            #Detect of de astroids buiten het scherm zij
+            if(astroid.y > resolution[1]):
+                listOfDeletedAstroids.append(i)
             astroid.draw()
+
+        #Delete de astroids van de vorige frame
+        for i in range(len(listOfDeletedAstroids)):
+            astroids.pop(listOfDeletedAstroids[i])
 
     if currentScene == "gameOver":
         screen.fill((0,0,0))
 
 def checkCol():
-    if(not godMode):
-        global isDead
-        playerRect = player.player
-        for astroid in astroids:
-            if playerRect.colliderect(astroid.x, astroid.y, 20*2, 20*2):
-                isDead = True
-                loadScene("gameOver")
-            
+    global isDead
+    playerRect = player.player
+    deletedAstroids = []
+    for i in range(len(astroids)):
+        astroid = astroids[i]
+        if playerRect.colliderect(astroid.x, astroid.y, 20*2, 20*2):
+            if not astroid.isPuzzel:
+                if(not godMode):
+                    isDead = True
+                    loadScene("gameOver")
+            elif astroid.isPuzzel:
+                deletedAstroids.append(i)
+                global stopAstroids, stopAstroidsTijd
+                stopAstroids = True
+                stopAstroidsTijd = pygame.time.get_ticks()
+        
+    for i in range(len(deletedAstroids)):
+        astroids.pop(deletedAstroids[i])    
