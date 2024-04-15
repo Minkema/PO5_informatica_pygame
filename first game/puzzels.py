@@ -18,7 +18,7 @@ squareWidth, squareHeight = 200, 200
 squaresRect = pygame.Rect(settings.resolution[0] / 2 - squareWidth / 2, settings.resolution[1] / 2 - squareHeight / 2, squareWidth, squareHeight)
 
 #Hoeveel tijd er tussen de vierkanten op het scherm zit bij de eerste puzzel
-intervalBetweenSquares = 250
+intervalBetweenSquares = 350
 startEersteGame = 0
 
 def loadRandomPuzzel():
