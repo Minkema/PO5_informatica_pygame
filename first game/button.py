@@ -6,7 +6,7 @@ class ImageButton():
         #Dit is de functie die wordt gecalled automatisch als je een nieuwe instance maakt. Hier moeten een paar standaard waarden worden gegeven.
         def __init__(self, x, y, image):
             self.image = image
-            self.image = pygame.transform.scale(self.image, (600, 150))
+            self.image = pygame.transform.scale(self.image, (600 * settings.resolution[0] / 1920, 150 * settings.resolution[1] / 1080))
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
             self.Clicked = False
