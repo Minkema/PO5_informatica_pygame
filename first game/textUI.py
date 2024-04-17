@@ -11,6 +11,14 @@ def init():
 def drawText(text, font, text_col, x,y):
     img = font.render(text, True, text_col)
     #Dit zorgt ervoor dat de x en y coordinaten die je geeft altijd het center is
-    x = x - img.get_width() / 2
+    x = x - int(img.get_width() / 2)
     y = y - img.get_height() / 2
     settings.screen.blit(img, (x,y))
+    return int(img.get_width() / 2)
+
+def drawTextNotCentered(text, font, text_col, x,y):
+    img = font.render(text, True, text_col)
+    #Dit zorgt ervoor dat de y coordinaten die je geeft altijd het center is
+    y = y - img.get_height() / 2
+    settings.screen.blit(img, (x,y))
+    
