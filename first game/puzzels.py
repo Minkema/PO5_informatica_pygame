@@ -1,8 +1,8 @@
 import random, pygame, settings, textUI, scenehandler
-from textUI import drawText
+from textUI import drawText, drawTextNotCentered
 from button import PuzzelButton
 
-numberOfPuzzels = 1
+numberOfPuzzels = 2
 currentPuzzel = "none"
 
 #Dit is allemaal voor de eerste puzzel:
@@ -22,16 +22,20 @@ intervalBetweenSquares = 350
 startEersteGame = 0
 
 def loadRandomPuzzel():
-    randomPuzzel = random.uniform(1,numberOfPuzzels)
-
+    randomPuzzel = random.randint(2,numberOfPuzzels)
+    global currentPuzzel
     match randomPuzzel:
         case 1:
-            global currentPuzzel
             global startEersteGame
 
             loadEerstePuzzel()
             startEersteGame = pygame.time.get_ticks()
             currentPuzzel = "eerste"
+        
+        case 2: 
+            keybindPuzzleLoad()
+            currentPuzzel = "keybindPuzzle"
+
         case _:
             print("Error random puzzel out of bounds")
 
@@ -65,6 +69,10 @@ def mainGameLoop():
                 pygame.draw.rect(settings.screen, colors[3], squaresRect)
             else:
                 checkSolEerste()
+    
+    elif(currentPuzzel == "keybindPuzzle"):
+        currentTime = pygame.time.get_ticks()
+        keybindPuzzle()
 
 #Hoeveel de speler er al goed heeft
 currentNum = 0
@@ -145,3 +153,82 @@ def startCountdown(timeInBetween):
         return False
 
     return True
+
+
+#keybindpuzzle variables
+abcDict = {"  A":pygame.K_a, "  B":pygame.K_b, "  C":pygame.K_c, "  D":pygame.K_d, "  E":pygame.K_e, "  F":pygame.K_f, "  G":pygame.K_g, "  H":pygame.K_h, "  I":pygame.K_i, "  J":pygame.K_j, "  K":pygame.K_k, "  L":pygame.K_l, "  M":pygame.K_m,
+           "  N":pygame.K_n, "  O":pygame.K_o, "  P":pygame.K_p, "  Q":pygame.K_q, "  R":pygame.K_r, "  S":pygame.K_s, "  T":pygame.K_t, "  U":pygame.K_u, "  V":pygame.K_v, "  W":pygame.K_w, "  X":pygame.K_x, "  Y":pygame.K_y, "  Z":pygame.K_z}
+abcList = ["  A","  B","  C","  D","  E","  F","  G","  H","  I","  J","  K","  L","  M","  N","  O","  P","  Q","  R","  S","  T", "  U","  V","  W","  X","  Y","  Z"]
+inputLetterList = []
+inputKeyList = []
+keystring = ""
+textBackground = 0
+currentIndex = 0  
+
+#preparation for keybindpuzzle
+def keybindPuzzleLoad():
+    global keystring, textBackground
+    random.shuffle(abcList)
+
+    #loads backgroundimage for text
+    try:
+        textBackground_Image = pygame.image.load("Textures/Puzzles/backgroundText.png")
+        textBackground = pygame.transform.scale(textBackground_Image, (400, 60))
+    except:
+        print("Image couldn't load")
+
+    #letters van ABC list verplaatsen naar writeable string
+    for i in range(0,10):
+        keystring = keystring + abcList[i]
+        inputLetterList.append(abcList[i])
+
+    for letter in inputLetterList:
+        inputKeyList.append(abcDict.get(letter))
+    
+#mainloop for keybind puzzle
+def keybindPuzzle():
+
+    global currentPuzzel, currentNum, currentIndex, keystring
+    events = pygame.event.get()
+    keystring2 = keystring[0:currentIndex + 1]
+
+    #Stops puzzle once correctly completed
+    if (currentNum == 10):
+        currentPuzzel = "none"
+        resetKeybindPuzzel()
+        return
+    
+    #Checks for correct key input
+    for event in events: 
+        if event.type == pygame.KEYDOWN:
+            if event.key == inputKeyList[currentNum]:
+                currentNum = currentNum + 1
+                currentIndex = currentIndex + 3
+
+    #Background image for random letter order
+    settings.screen.blit(textBackground, (settings.resolution[0] / 2 - textBackground.get_width() / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 - textBackground.get_height() / 2) )
+
+    #Tells player what to do (text)
+    drawText("Type the keys in the correct order!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 20 )
+
+    #Draws random letter order on screen
+    drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
+    #Says where random text x-cords start
+    extraWidth = drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
+    #shows which letters have been typed
+    drawTextNotCentered(keystring2, textUI.testFont, (255,0,0), settings.resolution[0] / 2 - extraWidth, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
+
+#resets keybind puzzle  
+def resetKeybindPuzzel():
+    global currentNum, keystring, inputKeyList, inputLetterList, currentIndex
+    currentNum = 0
+    
+    keystring = ""
+    currentIndex = 0
+    inputKeyList = []
+    inputLetterList = []
+
+    scenehandler.stopAstroids = False
+    scenehandler.afterStopAstroids = False
+    scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
+    scenehandler.stopAstroidsTijd = 0
