@@ -51,6 +51,8 @@ def loadTestScene():
     except pygame.error as e:
         print("startscreen couldn't load")
 
+    pygame.mixer.music.load('Audio/MainGame/MainGame.mp3')
+
 def loadStartScene():
     #Loads the music in pygame so that it can be used later in the scene loop
     pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
