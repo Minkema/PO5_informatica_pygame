@@ -14,12 +14,17 @@ playerX = settings.playerX
 playerY = settings.playerY
 movementspeed = 4
 
-player = pygame.Rect((playerX,playerY,playerWidht,playerHeight))
-
+player = 0
 
 def loadPlayer():
+    #Resets all the values for if the game has been started before
+    global playerX, playerY, character, player
+    playerX = settings.playerX
+    playerY = settings.playerY
+    character = 0
+    player = pygame.Rect((playerX,playerY,playerWidht,playerHeight))
+
     #trys to load texture on player
-    global character
     try:
         character_image = pygame.image.load('Textures/Player/player.png')
         character = pygame.transform.scale(character_image, (playerWidht,playerHeight))
@@ -33,24 +38,32 @@ def loadPlayer():
 def drawPlayer():
     pygame.draw.rect(screen, (255, 0, 100), player)
 
+spacePressed = False
+
 #Moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
 def update_movement():
     key = pygame.key.get_pressed()
-    global playerX, playerY, character
+    global playerX, playerY, character, spacePressed
 
     if (key[pygame.K_a] == True) and (playerX > 0):
         player.move_ip(-movementspeed,0)
         playerX -= movementspeed
-    if (key[pygame.K_w] == True) and (playerY < resolution[1]):
+    if (key[pygame.K_w] == True) and (playerY - movementspeed > 0):
         player.move_ip(0,-movementspeed)
-        playerY += movementspeed
-    if (key[pygame.K_s] == True) and (playerY > 0+playerHeight):
-        player.move_ip(0,movementspeed)
         playerY -= movementspeed
+    if (key[pygame.K_s] == True) and (playerY < resolution[1] - playerHeight):
+        player.move_ip(0,movementspeed)
+        playerY += movementspeed
     if (key[pygame.K_d] == True) and (playerX < (resolution[0]-playerWidht)):
         player.move_ip(movementspeed,0)
         playerX += movementspeed
-    
+    if(key[pygame.K_SPACE] == True and not spacePressed):
+        spacePressed = True
+        scenehandler.spawnBullets(playerX, playerY)
+    elif(not key[pygame.K_SPACE]):
+        spacePressed = False
+
+
     #MOET UIT DE GAME ALS HIJ AF IS, DIT ZORGT ERVOOR DAT JE EEN PUZZEL IN JE SCHERM KRIJGT ALS JE P INDRUKT
     if (key[pygame.K_p] == True and not scenehandler.stopAstroids):
         scenehandler.stopAstroids = True
