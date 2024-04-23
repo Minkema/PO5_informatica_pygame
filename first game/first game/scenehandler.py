@@ -1,0 +1,248 @@
+import pygame, settings, player, random, puzzels, textUI, main
+from astroids import Astroid
+from button import ImageButton
+from settings import resolution
+
+currentScene = "default"
+screen = settings.screen
+music_active = False
+astroids = []
+isDead = False
+stopAstroids = False
+stopAstroidsTijd = 0
+afterStopAstroids = False
+delayTime = 0
+selectedTab = 0
+
+#!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
+godMode = True
+
+Startbutton = 0
+Settingsbutton = 0
+Exitbutton = 0
+
+def loadScene(scenename):
+    #All specific sceneloading stuff needs to be handeld here
+    global currentScene
+    currentScene = scenename
+
+    if(scenename == "startscreen"):
+        loadStartScene()
+    if(scenename == "testScene"):
+        loadTestScene()
+    if(scenename == "gameOver"):
+        loadGameOverScene()
+    if(scenename == "SettingsScreen"):
+        LoadSettingsScene()
+
+def loadTestScene():
+    player.loadPlayer()
+    global background, isDead, startTime, laatsteTick
+    #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
+    startTime = pygame.time.get_ticks()
+    #Laatste tick wordt continue veranderd maar moet wel beginnen als de startijd begint daarom worden die hier aanelkaar gelijk gested
+    laatsteTick = startTime
+    #Want de speler is altijd alive als hij spawned
+    isDead = False
+    #Tries to load the specific background textures
+    try:
+        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background = pygame.transform.scale(background_image, resolution)
+    #if loading fails it will print that in the console
+    except pygame.error as e:
+        print("startscreen couldn't load")
+
+def loadStartScene():
+    #Loads the music in pygame so that it can be used later in the scene loop
+    pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
+
+    global background
+    global Startbutton 
+    global Settingsbutton 
+    global Exitbutton
+    #Tries to load the specific background textures
+    try:
+        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background = pygame.transform.scale(background_image, resolution)
+    #if loading fails it will print that in the console
+    except pygame.error as e:
+        print("startscreen couldn't load")
+
+    try:
+        StartButton_img = pygame.image.load('Textures/StartScreen/StartButton.png').convert_alpha()
+        SettingsButton_img = pygame.image.load('Textures/StartScreen/SettingsButton.png').convert_alpha()
+        ExitButton_img = pygame.image.load('Textures/StartScreen/ExitButton.png').convert_alpha()
+    except pygame.error as e:
+        print("button images couldn't load")
+
+    #creating button instance
+    Startbutton = ImageButton(((300/1920)*resolution[0]),((400/1920)*resolution[0]), StartButton_img)
+    Settingsbutton = ImageButton(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
+    Exitbutton = ImageButton(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
+
+def LoadSettingsScene():
+    global background
+    try:
+        background_image = pygame.image.load('Textures/Settings/Settings_Background.png')
+        background = pygame.transform.scale(background_image, resolution)
+    #if loading fails it will print that in the console
+    except pygame.error as e:
+        print("startscreen couldn't load")
+
+    pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
+
+def loadGameOverScene():
+    global astroids
+    astroids = []
+
+#Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
+laatsteTick = 0
+
+#Daadswerkelijke interval
+interval = 1000
+
+def mainGameLoop():
+    screen.blit(background, (0,0))
+    #All scene specific stuff in the main game loop needs to be handled here
+    if currentScene == "startscreen":
+
+        #Draw de daadwerkelijke knoppen
+        Startbutton.draw()
+        Settingsbutton.draw()
+        Exitbutton.draw()
+
+        #Check voor of er op de knoppen wordt gelickt. Hoe dit precies werkt staat in de button class.
+        if Startbutton.checkClicked():
+            loadScene("testScene")
+
+        if Settingsbutton.checkClicked():
+            loadScene("SettingsScreen")
+
+        #Invoked de quit event zodat het eigenlijk lijkt alsof de speler op het kruisje heeft geclickt en de main function alles stopt
+        if Exitbutton.checkClicked():
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+    if currentScene == "testScene":
+        #Comments about these functions are at the functions declarations
+        global afterStopAstroids
+
+        #afterstopAstroids staat iets verder naar beneden uitgelegd
+        if(not afterStopAstroids):
+            player.drawPlayer()
+            player.update_movement()
+            player.drawerPlayerTexture()
+        global laatsteTick
+
+        current_time = pygame.time.get_ticks()
+        if current_time - laatsteTick >= interval:
+            for i in range(5):
+                if (not isDead and not stopAstroids):
+                    laatsteTick = current_time
+                    if(random.randint(0, 25) == 5):
+                        astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4), True)
+                    else:
+                        astroid = Astroid(random.randint(0, resolution[0]), 0, random.uniform(1,4), False)
+                    astroids.append(astroid)
+        
+        #Oke dit kan confusing zijn maar stopAstroids = true zodra een puzzel wordt gecalled. afterStopAstroids is pas true na een bepaalde timer zodat de player nog ff wat tijd heeft 
+        #om astroids te ontwijken
+        if(stopAstroids and not afterStopAstroids):
+            textUI.drawText("Er komt een puzzel aan wees ready!", textUI.testFont, (225,225,225), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+            if (current_time - stopAstroidsTijd >= 2000):
+                puzzels.loadRandomPuzzel()
+                afterStopAstroids = True
+
+        checkCol()
+        #De timer moet niet worden laten zien als we bezig zijn met een puzzel
+        if not stopAstroids:
+            textUI.drawText(str(round((current_time - startTime - delayTime) / 1000, 1)) + "s", textUI.testFont , (255,255,255), resolution[0] / 2, resolution[1] / 2 + resolution[1] / 1080 *-400)
+        
+        #Lijst van astroids die de volgende frame weg moeten
+        listOfDeletedAstroids = []
+
+        for i in range(len(astroids)):
+            astroid = astroids[i]
+            #Detect of de astroids buiten het scherm zij
+            if(astroid.y > resolution[1]):
+                listOfDeletedAstroids.append(i)
+            astroid.draw()
+
+        #Delete de astroids van de vorige frame
+        for i in range(len(listOfDeletedAstroids)):
+            astroids.pop(listOfDeletedAstroids[i])
+
+    if currentScene == "gameOver":
+        screen.fill((0,0,0))
+
+    global music_active
+
+    #loads the music file for this specific scene
+    if music_active == False:
+        pygame.mixer.music.play()
+        music_active = True
+    if pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(100)
+    else:
+        pygame.mixer.music.stop()
+        music_active = False
+
+    if currentScene == "SettingsScreen":   
+        global selectedTab 
+        if selectedTab == 0:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(153, 204, 255),(300/1920*resolution[0]),(200/1080*resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*resolution[0]),(300/1080*resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*resolution[0]),(400/1080*resolution[1]))
+        
+        if selectedTab == 1:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*resolution[0]),(200/1080*resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(153, 204, 255),(295/1920*resolution[0]),(300/1080*resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*resolution[0]),(400/1080*resolution[1]))
+
+        if selectedTab == 2:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*resolution[0]),(200/1080*resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*resolution[0]),(300/1080*resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(153, 204, 255),(278/1920*resolution[0]),(400/1080*resolution[1]))
+
+        TabList = [Tab1, Tab2, Tab3]
+        settingsList = [settings.resolution, settings.fps, settings.difficulty]
+
+        textUI.drawText((str(resolution[0])+" X "+str(resolution[1])), textUI.settingsFont,(153, 204, 255),(650/1920*resolution[0]),(200/1080*resolution[1]))
+        textUI.drawText((str(settings.fps)+"FPS"), textUI.settingsFont,(153, 204, 255),(650/1920*resolution[0]),(300/1080*resolution[1]))
+        textUI.drawText(str(settings.difficulty), textUI.settingsFont,(153, 204, 255),(650/1920*resolution[0]),(400/1080*resolution[1]))
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    loadScene("startscreen")
+                elif event.key == pygame.K_DOWN:
+                    selectedTab += 1
+                    if selectedTab > len(TabList)-1:
+                        selectedTab = 0
+                elif event.key == pygame.K_UP:
+                    selectedTab -= 1
+                    if selectedTab < 0:
+                        selectedTab = len(TabList)-1
+                elif event.key == pygame.K_RIGHT:
+                    print(settingsList[selectedTab])
+                elif event.key == pygame.K_LEFT:
+                    print("left arrow key pressed")
+
+def checkCol():
+    global isDead
+    playerRect = player.player
+    deletedAstroids = []
+    for i in range(len(astroids)):
+        astroid = astroids[i]
+        if playerRect.colliderect(astroid.x, astroid.y, 20*2, 20*2):
+            if not astroid.isPuzzel:
+                if(not godMode):
+                    isDead = True
+                    loadScene("gameOver")
+            elif astroid.isPuzzel:
+                deletedAstroids.append(i)
+                global stopAstroids, stopAstroidsTijd
+                stopAstroids = True
+                stopAstroidsTijd = pygame.time.get_ticks()
+        
+    for i in range(len(deletedAstroids)):
+        astroids.pop(deletedAstroids[i])    
