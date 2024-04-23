@@ -47,7 +47,7 @@ def loadTestScene():
     isDead = False
     #Tries to load the specific background textures
     try:
-        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background_image = pygame.image.load('Textures/MainGame/Background.png')
         background = pygame.transform.scale(background_image, resolution)
     #if loading fails it will print that in the console
     except pygame.error as e:
