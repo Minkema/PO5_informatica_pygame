@@ -1,4 +1,4 @@
-import settings, pygame
+import settings, pygame, scenehandler
 
 
 class Astroid:
@@ -6,7 +6,7 @@ class Astroid:
     def __init__(self, x, y, velocity, isPuzzel):
         self.x = x
         self.y = y
-        self.velocity = velocity
+        self.velocity = velocity * scenehandler.speedMultiplier
         self.isPuzzel = isPuzzel
         
     #Draw de daadwerkelijke astroid

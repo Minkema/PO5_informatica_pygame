@@ -12,6 +12,8 @@ stopAstroids = False
 stopAstroidsTijd = 0
 afterStopAstroids = False
 delayTime = 0
+speedMultiplier = 1
+scoreMultiplier = 1
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
 godMode = True
@@ -153,7 +155,7 @@ def mainGameLoop():
 
     if currentScene == "testScene":
         #Comments about these functions are at the functions declarations
-
+        global current_time
         #afterstopAstroids staat iets verder naar beneden uitgelegd
         if(not afterStopAstroids):
             player.drawPlayer()
@@ -180,10 +182,11 @@ def mainGameLoop():
                 puzzels.loadRandomPuzzel()
                 afterStopAstroids = True
 
+        #Runs collision check (constant)
         checkCol()
-        #De timer moet niet worden laten zien als we bezig zijn met een puzzel
-        if not stopAstroids:
-            textUI.drawText(str(round((current_time - startTime - delayTime) / 1000, 1)) + "s", textUI.testFont , (255,255,255), resolution[0] / 2, resolution[1] / 2 + resolution[1] / 1080 *-400)
+
+        #Print time, score and level on screen
+        showTimeScoreLevel()
         
         #Lijst van astroids die de volgende frame weg moeten
         listOfDeletedAstroids = []
@@ -204,10 +207,7 @@ def mainGameLoop():
         retryButton.draw()
         menuButton.draw()   
 
-
-
         #Restarts game and sends to main menu once buttons are clicked
-        #Needs to be fixed (loadScene doesnt work properly)
         if retryButton.checkClicked() == True:
             loadScene("testScene")
             stopAstroids = False
@@ -252,3 +252,34 @@ def checkCol():
         
     for i in range(len(deletedAstroids)):
         astroids.pop(deletedAstroids[i])    
+
+def showTimeScoreLevel():
+    global currentScore, currentLevel, speedMultiplier, scoreMultiplier
+    currentScore = round((current_time - startTime - delayTime) / 60 * scoreMultiplier, 0) 
+
+    #Increases level once score threshold has been met
+    if currentScore <= 1000:
+        currentLevel = 1
+    elif currentScore <= 2000 and currentScore >= 1000:
+        currentLevel = 2
+        speedMultiplier = 1.5
+    elif currentScore <= 3000 and currentScore >= 2000:
+        currentLevel = 3
+        speedMultiplier = 2
+    elif currentScore <= 4000 and currentScore >= 3000:
+        currentLevel = 4
+        speedMultiplier = 2.5
+    elif currentScore <= 5000 and currentScore >= 4000:
+        currentLevel = 5
+        speedMultiplier = 3
+    elif currentScore >= 5000:
+        currentLevel = "???"
+    
+    #De timer moet niet worden laten zien als we bezig zijn met een puzzel
+    if not stopAstroids:
+        #Draws Level
+        textUI.drawText("Level " + str(currentLevel), textUI.testFont , (255,255,255), resolution[0] / 2, resolution[1] / 2 + resolution[1] / 1080 *-500)
+        #Draws Time
+        textUI.drawText(str(round((current_time - startTime - delayTime) / 1000, 1)) + "s", textUI.testFont , (255,255,255), resolution[0] / 2, resolution[1] / 2 + resolution[1] / 1080 *-400)
+        #Draws Score
+        textUI.drawText("Score: "+ str(currentScore), textUI.testFont , (255,255,255), resolution[0] - 1800, resolution[1] / 2 + resolution[1] / 1080 *-400)
