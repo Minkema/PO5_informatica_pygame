@@ -22,7 +22,7 @@ intervalBetweenSquares = 350
 startEersteGame = 0
 
 def loadRandomPuzzel():
-    randomPuzzel = random.randint(2,numberOfPuzzels)
+    randomPuzzel = random.randint(1,numberOfPuzzels)
     global currentPuzzel
     match randomPuzzel:
         case 1:
@@ -118,6 +118,7 @@ def checkSolEerste():
                 #Ze hebben de verkeerde gekozen
                 if not buttonsClicked[i]: 
                     currentPuzzel = "none"
+                    ResetEerstePuzzel()
                     scenehandler.loadScene("gameOver")
 
     #Laat de nummers zien van de al gekozen vakjes
@@ -201,9 +202,15 @@ def keybindPuzzle():
     #Checks for correct key input
     for event in events: 
         if event.type == pygame.KEYDOWN:
+            #Progresses puzzle if correct input was made
             if event.key == inputKeyList[currentNum]:
                 currentNum = currentNum + 1
                 currentIndex = currentIndex + 3
+            #Fails puzzle if incorrect input was made
+            elif event.key != inputKeyList[currentNum]:
+                currentPuzzel = "none"
+                resetKeybindPuzzel()
+                scenehandler.loadScene("gameOver")
 
     #Background image for random letter order
     settings.screen.blit(textBackground, (settings.resolution[0] / 2 - textBackground.get_width() / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 - textBackground.get_height() / 2) )

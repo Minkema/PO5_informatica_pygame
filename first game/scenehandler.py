@@ -19,6 +19,8 @@ godMode = True
 Startbutton = 0
 Settingsbutton = 0
 Exitbutton = 0
+retryButton = 0
+menuButton = 0
 
 def loadScene(scenename):
     #All specific sceneloading stuff needs to be handeld here
@@ -81,6 +83,7 @@ def loadStartScene():
     Settingsbutton = ImageButton(((300/1920)*resolution[0]),((575/1920)*resolution[0]), SettingsButton_img)
     Exitbutton = ImageButton(((300/1920)*resolution[0]),((750/1920)*resolution[0]), ExitButton_img)
 
+
 def LoadSettingsScene():
     global background
     try:
@@ -93,7 +96,29 @@ def LoadSettingsScene():
     pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
 
 def loadGameOverScene():
-    global astroids
+    global astroids, background, retryButton, menuButton
+    #Loads the background for game over scene
+    try:
+        background_image = pygame.image.load('Textures/GameOver Screen/GameOver.png')
+        background = pygame.transform.scale(background_image, resolution)
+    except pygame.error as e:
+        print("Game Over screen failed to load")
+
+    #Loads the music in pygame so that it can be used later in the scene loop
+    #Er moet nieuwe muziek hier toegevoegd worden
+    #pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
+
+    try:
+        retryButton_img = pygame.image.load('Textures/GameOver Screen/retryButton.png').convert_alpha()
+        menuButton_img = pygame.image.load('Textures/GameOver Screen/menuButton.png').convert_alpha()
+    except pygame.error as e:
+        print("button images couldn't load")
+
+    #creating button instance
+    retryButton = ImageButton(((300/1920)*resolution[0]),((680/1920)*resolution[0]), retryButton_img)
+    menuButton = ImageButton(((1000/1920)*resolution[0]),((680/1920)*resolution[0]), menuButton_img)
+
+    
     astroids = []
 
 #Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
@@ -103,6 +128,7 @@ laatsteTick = 0
 interval = 1000
 
 def mainGameLoop():
+    global afterStopAstroids, stopAstroids, delayTime
     screen.blit(background, (0,0))
     #All scene specific stuff in the main game loop needs to be handled here
     if currentScene == "startscreen":
@@ -115,6 +141,8 @@ def mainGameLoop():
         #Check voor of er op de knoppen wordt gelickt. Hoe dit precies werkt staat in de button class.
         if Startbutton.checkClicked():
             loadScene("testScene")
+            stopAstroids = False
+            afterStopAstroids = False
 
         if Settingsbutton.checkClicked():
             loadScene("SettingsScreen")
@@ -125,7 +153,6 @@ def mainGameLoop():
 
     if currentScene == "testScene":
         #Comments about these functions are at the functions declarations
-        global afterStopAstroids
 
         #afterstopAstroids staat iets verder naar beneden uitgelegd
         if(not afterStopAstroids):
@@ -173,7 +200,26 @@ def mainGameLoop():
             astroids.pop(listOfDeletedAstroids[i])
 
     if currentScene == "gameOver":
-        screen.fill((0,0,0))
+        #Draws retry and main menu button
+        retryButton.draw()
+        menuButton.draw()   
+
+
+
+        #Restarts game and sends to main menu once buttons are clicked
+        #Needs to be fixed (loadScene doesnt work properly)
+        if retryButton.checkClicked() == True:
+            loadScene("testScene")
+            stopAstroids = False
+            afterStopAstroids = False
+            delayTime = 0
+
+            print("Retry button was pressed")
+    
+        if menuButton.checkClicked() == True:
+            loadScene("startscreen")
+
+
 
     global music_active
 
