@@ -98,6 +98,8 @@ def checkSolEerste():
     #Player heeft ze goed opgelost
     if(currentNum == 4):
         currentPuzzel = "none"
+        #increases score gain if puzzle has been completed succesfully
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
         ResetEerstePuzzel()
         return
 
@@ -195,6 +197,9 @@ def keybindPuzzle():
 
     #Stops puzzle once correctly completed
     if (currentNum == 10):
+        #increases score gain if puzzle has been completed succesfully
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+
         currentPuzzel = "none"
         resetKeybindPuzzel()
         return
