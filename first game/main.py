@@ -1,10 +1,38 @@
-import pygame, scenehandler, settings, puzzels, textUI
+import pygame, scenehandler, settings, puzzels, textUI, cv2
 
-if __name__ == "__main__":
+def playOpeningVid():
+    audioClip = 'Audio/Intro/introaudio.mp3'
+    pygame.mixer.music.load(audioClip)
+    pygame.mixer.music.play()
 
+    cap = cv2.VideoCapture('Videos/intro.mp4')
+    if (cap.isOpened()== False):  
+        print("File not loaded")
+
+    while(cap.isOpened()):
+        ret, frame = cap.read() 
+        if ret == True: 
+        # Display the resulting frame 
+            frame = cv2.resize(frame, (settings.resolution[0], settings.resolution[1]))
+            cv2.namedWindow('Video', cv2.WND_PROP_FULLSCREEN)
+            cv2.setWindowProperty('Video', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.imshow('Video', frame) 
+            cv2.waitKey(33)
+        else: 
+            break
+    cap.release() 
+  
+    # Closes all the frames 
+    cv2.destroyAllWindows() 
+    initGame()   
+
+def initPygame():
     #Initiates some pygame functions
     pygame.init()
     pygame.mixer.init()
+
+def initGame():
+    
     pygame.display.set_caption("Space Traversers")
 
     #Kijk in het testUI.py bestand om te zien wat dit doet
@@ -15,7 +43,7 @@ if __name__ == "__main__":
     #Inits the scene
     scenehandler.loadScene("startscreen")
     #scenehandler.loadScene("testScene")
-
+    
     run = True
     
     #Main game loop
@@ -34,3 +62,12 @@ if __name__ == "__main__":
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
     pygame.quit()
+
+if __name__ == "__main__":
+    initPygame()
+    playOpeningVid()
+
+
+    
+
+
