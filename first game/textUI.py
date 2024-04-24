@@ -14,6 +14,7 @@ def drawText(text, font, text_col, x,y):
     x = x - img.get_width() / 2
     y = y - img.get_height() / 2
     settings.screen.blit(img, (x,y))
+    return int(img.get_width() / 2)
 
 def drawTextNotCentered(text, font, text_col, x,y):
     img = font.render(text, True, text_col)
