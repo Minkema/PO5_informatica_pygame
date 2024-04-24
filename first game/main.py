@@ -1,29 +1,32 @@
 import pygame, scenehandler, settings, puzzels, textUI, cv2
 
+playIntro = True
+
 def playOpeningVid():
-    audioClip = 'Audio/Intro/introaudio.mp3'
-    pygame.mixer.music.load(audioClip)
-    pygame.mixer.music.play()
-
-    cap = cv2.VideoCapture('Videos/intro.mp4')
-    if (cap.isOpened()== False):  
-        print("File not loaded")
-
-    while(cap.isOpened()):
-        ret, frame = cap.read() 
-        if ret == True: 
-        # Display the resulting frame 
-            frame = cv2.resize(frame, (settings.resolution[0], settings.resolution[1]))
-            cv2.namedWindow('Video', cv2.WND_PROP_FULLSCREEN)
-            cv2.setWindowProperty('Video', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            cv2.imshow('Video', frame) 
-            cv2.waitKey(33)
-        else: 
-            break
-    cap.release() 
+    if playIntro:
+        audioClip = 'Audio/Intro/introaudio.mp3'
+        pygame.mixer.music.load(audioClip)
+        pygame.mixer.music.play()
+    
+        cap = cv2.VideoCapture('Videos/intro.mp4')
+        if (cap.isOpened()== False):  
+            print("File not loaded")
+    
+        while(cap.isOpened()):
+            ret, frame = cap.read() 
+            if ret == True: 
+            # Display the resulting frame 
+                frame = cv2.resize(frame, (settings.resolution[0], settings.resolution[1]))
+                cv2.namedWindow('Video', cv2.WND_PROP_FULLSCREEN)
+                cv2.setWindowProperty('Video', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                cv2.imshow('Video', frame) 
+                cv2.waitKey(33)
+            else: 
+                break
+        cap.release() 
   
-    # Closes all the frames 
-    cv2.destroyAllWindows() 
+        # Closes all the frames 
+        cv2.destroyAllWindows() 
     initGame()   
 
 def initPygame():
