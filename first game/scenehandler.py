@@ -23,6 +23,7 @@ Settingsbutton = 0
 Exitbutton = 0
 retryButton = 0
 menuButton = 0
+selectedTab = 0
 
 def loadScene(scenename):
     #All specific sceneloading stuff needs to be handeld here
@@ -153,6 +154,47 @@ def mainGameLoop():
         pygame.mixer.music.stop()
         music_active = False
 
+    if currentScene == "SettingsScreen":   
+        global selectedTab 
+        if selectedTab == 0:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(153, 204, 255),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+        
+        if selectedTab == 1:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(153, 204, 255),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+
+        if selectedTab == 2:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(153, 204, 255),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+
+        TabList = [Tab1, Tab2, Tab3]
+        settingsList = [settings.resolution, settings.fps, settings.difficulty]
+
+        textUI.drawText((str(settings.resolution[0])+" X "+str(settings.resolution[1])), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+        textUI.drawText((str(settings.fps)+"FPS"), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+        textUI.drawText(str(settings.difficulty), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    loadScene("startscreen")
+                elif event.key == pygame.K_DOWN:
+                    selectedTab += 1
+                    if selectedTab > len(TabList)-1:
+                        selectedTab = 0
+                elif event.key == pygame.K_UP:
+                    selectedTab -= 1
+                    if selectedTab < 0:
+                        selectedTab = len(TabList)-1
+                elif event.key == pygame.K_RIGHT:
+                    print(settingsList[selectedTab])
+                elif event.key == pygame.K_LEFT:
+                    print("left arrow key pressed")
+
 def startSceneMainGameLoop():
     #Draw de daadwerkelijke knoppen
     Startbutton.draw()
@@ -164,7 +206,7 @@ def startSceneMainGameLoop():
         loadScene("testScene")
 
     if Settingsbutton.checkClicked():
-        print("settingsbutton pressed")
+        loadScene("SettingsScreen")
 
     #Invoked de quit event zodat het eigenlijk lijkt alsof de speler op het kruisje heeft geclickt en de main function alles stopt
     if Exitbutton.checkClicked():
@@ -204,6 +246,7 @@ def testSceneMainGameLoop():
         if (current_time - stopAstroidsTijd >= 2000):
             puzzels.loadRandomPuzzel()
             afterStopAstroids = True
+    
 
     checkCol()
     #Print time, score and level on screen
