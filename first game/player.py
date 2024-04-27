@@ -34,10 +34,6 @@ def loadPlayer():
     player = character.get_rect()
     player.center = (playerX+(playerWidht/2), playerY+(playerHeight/2))
 
-#Draws the player
-def drawPlayer():
-    pygame.draw.rect(screen, (255, 0, 100), player)
-
 spacePressed = False
 
 #Moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
@@ -59,7 +55,9 @@ def update_movement():
         playerX += movementspeed
     if(key[pygame.K_SPACE] == True and not spacePressed):
         spacePressed = True
-        scenehandler.spawnBullets(playerX, playerY)
+        if(scenehandler.energyLevel - scenehandler.bulletCost >= 0):
+            scenehandler.spawnBullets(playerX, playerY)
+            scenehandler.energyLevel = scenehandler.energyLevel - scenehandler.bulletCost
     elif(not key[pygame.K_SPACE]):
         spacePressed = False
 

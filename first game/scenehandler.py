@@ -14,6 +14,8 @@ afterStopAstroids = False
 delayTime = 0
 speedMultiplier = 1
 scoreMultiplier = 1
+energyLevel = 0
+bulletCost = 5
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
 godMode = True
@@ -41,7 +43,7 @@ def loadScene(scenename):
 
 def loadTestScene():
     player.loadPlayer()
-    global background, isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets
+    global background, isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
 
     #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
     startTime = pygame.time.get_ticks()
@@ -56,6 +58,7 @@ def loadTestScene():
     delayTime = 0
     astroids = []
     bullets = []
+    energyLevel = 50
 
     #Tries to load the specific background textures
     try:
@@ -223,7 +226,6 @@ def testSceneMainGameLoop():
     #Comments about these functions are at the functions declarations
     #afterstopAstroids staat iets verder naar beneden uitgelegd
     if(not afterStopAstroids):
-        player.drawPlayer()
         player.update_movement()
         player.drawerPlayerTexture()
     global laatsteTick
@@ -280,11 +282,15 @@ def testSceneMainGameLoop():
         bullet.draw()
 
     #Delete de astroids van de vorige frame
+    currentOffset = 0
     for i in range(len(listOfDeletedAstroids)):
-        astroids.pop(listOfDeletedAstroids[i])
+        astroids.pop(listOfDeletedAstroids[i - currentOffset])
+        currentOffset = currentOffset + 1
 
+    currentOffset = 0
     for i in range(len(listOfDeletedBullets)):           
-        bullets.pop(listOfDeletedBullets[i])
+        bullets.pop(listOfDeletedBullets[i - currentOffset])
+        currentOffset = currentOffset + 1
 
 def checkCol():
     global isDead
@@ -336,6 +342,8 @@ def showTimeScoreLevel(current_time):
         textUI.drawText(str(round((current_time - startTime - delayTime) / 1000, 1)) + "s", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
         #Draws Score
         textUI.drawText("Score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+        #Draws bullet energy
+        textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
 
 def spawnBullets(x,y):
     global bullets

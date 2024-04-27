@@ -4,7 +4,7 @@ class Bullet:
     def __init__(self, x, y):
         self.x1 = x + settings.playerWidht * 0.2
         self.x2 = x + settings.playerWidht * 0.8
-        self.y = y
+        self.y = y + 18/1080 * settings.resolution[1]
         self.rect1 = pygame.Rect(self.x1, self.y, 5, 15)
         self.rect2 = pygame.Rect(self.x2, self.y, 5, 15)
         self.velocity = 25
