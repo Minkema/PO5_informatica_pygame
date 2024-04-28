@@ -1,5 +1,6 @@
 import pygame, settings, player, random, puzzels, textUI
 from astroids import Astroid
+from astroids import Planet
 from button import ImageButton
 from bullet import Bullet
 
@@ -16,6 +17,10 @@ speedMultiplier = 1
 scoreMultiplier = 1
 energyLevel = 0
 bulletCost = 5
+planet = 0
+amountOfPlanets = 0
+survivalChance = 0
+loadedSceneTime = 0
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
 godMode = True
@@ -26,39 +31,48 @@ Exitbutton = 0
 retryButton = 0
 menuButton = 0
 selectedTab = 0
+landButton = 0
+continueButton = 0
 
 def loadScene(scenename):
     #All specific sceneloading stuff needs to be handeld here
-    global currentScene
+    global currentScene, loadedSceneTime
+    loadedSceneTime = pygame.time.get_ticks()
     currentScene = scenename
 
     if(scenename == "startscreen"):
         loadStartScene()
     if(scenename == "testScene"):
-        loadTestScene()
+        loadTestScene(True)
     if(scenename == "gameOver"):
         loadGameOverScene()
+    if(scenename == "gameGewonnen"):
+        loadGameGewonnenScene()
     if(scenename == "SettingsScreen"):
         LoadSettingsScene()
+    if(scenename == "planet"):
+        LoadPlanetScene()    
 
-def loadTestScene():
+def loadTestScene(resetValues):
     player.loadPlayer()
-    global background, isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
+    global background
 
-    #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
-    startTime = pygame.time.get_ticks()
+    if resetValues:
+        global isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
+        #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
+        startTime = pygame.time.get_ticks()
 
-    #Laatste tick wordt continue veranderd maar moet wel beginnen als de startijd begint daarom worden die hier aanelkaar gelijk gested
-    laatsteTick = startTime
+        #Laatste tick wordt continue veranderd maar moet wel beginnen als de startijd begint daarom worden die hier aanelkaar gelijk gested
+        laatsteTick = startTime
 
-    #Resets all the values for if the game has been started before
-    isDead = False
-    stopAstroids = False
-    afterStopAstroids = False
-    delayTime = 0
-    astroids = []
-    bullets = []
-    energyLevel = 50
+        #Resets all the values for if the game has been started before
+        isDead = False
+        stopAstroids = False
+        afterStopAstroids = False
+        delayTime = 0
+        astroids = []
+        bullets = []
+        energyLevel = 50
 
     #Tries to load the specific background textures
     try:
@@ -117,8 +131,9 @@ def LoadSettingsScene():
     tempDifficulty = settings.difficulty
     tempVolume = settings.volume
 
+
 def loadGameOverScene():
-    global astroids, background, retryButton, menuButton
+    global  background, retryButton, menuButton
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/GameOver Screen/GameOver.png')
@@ -127,6 +142,8 @@ def loadGameOverScene():
         print("Game Over screen failed to load")
 
     #Loads the music in pygame so that it can be used later in the scene loop
+    #Er moet nieuwe muziek hier toegevoegd worden
+    #pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
     try:
         retryButton_img = pygame.image.load('Textures/GameOver Screen/retryButton.png').convert_alpha()
@@ -137,6 +154,55 @@ def loadGameOverScene():
     #creating button instance
     retryButton = ImageButton(((300/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), retryButton_img)
     menuButton = ImageButton(((1000/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+
+def LoadPlanetScene():
+    global planet, amountOfPlanets, survivalChance, landButton, continueButton
+    planet = Planet(settings.resolution[0] / 2, settings.resolution[1] / 2)
+    amountOfPlanets = amountOfPlanets + 1
+    maxChance = amountOfPlanets * 10
+    minChance = (amountOfPlanets - 2) * 10
+    if maxChance > 50:
+        maxChance = 50
+    if minChance < 0:
+        minChance = 0
+    survivalChance = 50 + random.randint(0, maxChance)
+
+    try:
+        landButton_img = pygame.image.load('Textures/StartScreen/StartButton.png').convert_alpha()
+        continueButton_img = pygame.image.load('Textures/StartScreen/SettingsButton.png').convert_alpha()
+    except pygame.error as e:
+        print("button images couldn't load")
+
+    #creating button instance
+    landButton = ImageButton(((480/1920)*settings.resolution[0]),((700/1920)*settings.resolution[0]), landButton_img)
+    continueButton = ImageButton(((960/1920)*settings.resolution[0]),((700/1920)*settings.resolution[0]), continueButton_img)    
+
+    global background
+    try:
+        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background = pygame.transform.scale(background_image, settings.resolution)
+    #if loading fails it will print that in the console
+    except pygame.error as e:
+        print("startscreen couldn't load")
+
+    pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
+
+def loadGameGewonnenScene():
+    global  background, menuButton
+    #Loads the background for game over scene
+    try:
+        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background = pygame.transform.scale(background_image, settings.resolution)
+    except pygame.error as e:
+        print("Game Over screen failed to load")
+
+    try:
+        menuButton_img = pygame.image.load('Textures/GameOver Screen/menuButton.png').convert_alpha()
+    except pygame.error as e:
+        print("button images couldn't load")
+
+    #creating button instance
+    menuButton = ImageButton(((779/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
 
 def mainGameLoop():
     settings.screen.blit(background, (0,0))
@@ -150,6 +216,11 @@ def mainGameLoop():
 
     if currentScene == "gameOver":
         gameOverSceneMainGameLoop()
+
+    if currentScene == "planet":
+        planetMainGameLoop()
+    if currentScene == "gameGewonnen":
+        gameGewonnenMainLoop()
     
     #Scene onafhankelijke dingen worden hier gehandeld
 
@@ -166,7 +237,7 @@ def mainGameLoop():
         music_active = False
 
     if currentScene == "SettingsScreen":   
-        global selectedTab 
+        global selectedTab , tempResolution, tempFramerate, tempDifficulty, tempVolume
 
         if selectedTab == 0:
             Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(153, 204, 255),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
@@ -220,6 +291,7 @@ def mainGameLoop():
                 elif event.key == pygame.K_a:
                     settings.applysettings()
 
+
 def startSceneMainGameLoop():
     #Draw de daadwerkelijke knoppen
     Startbutton.draw()
@@ -227,14 +299,14 @@ def startSceneMainGameLoop():
     Exitbutton.draw()
 
     #Check voor of er op de knoppen wordt gelickt. Hoe dit precies werkt staat in de button class.
-    if Startbutton.checkClicked():
+    if Startbutton.checkClicked(loadedSceneTime):
         loadScene("testScene")
 
-    if Settingsbutton.checkClicked():
+    if Settingsbutton.checkClicked(loadedSceneTime):
         loadScene("SettingsScreen")
 
     #Invoked de quit event zodat het eigenlijk lijkt alsof de speler op het kruisje heeft geclickt en de main function alles stopt
-    if Exitbutton.checkClicked():
+    if Exitbutton.checkClicked(loadedSceneTime):
         pygame.event.post(pygame.event.Event(pygame.QUIT))
 
 #Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
@@ -353,8 +425,10 @@ def showTimeScoreLevel(current_time):
     elif currentScore <= 5000 and currentScore >= 4000:
         currentLevel = 5
         speedMultiplier = 3
-    elif currentScore >= 5000:
-        currentLevel = "???"
+    elif currentScore >= 5000 + 1000 * amountOfPlanets:
+        currentLevel = 6 + amountOfPlanets
+        loadScene("planet")
+
     
     #De timer moet niet worden laten zien als we bezig zijn met een puzzel
     if not stopAstroids:
@@ -365,7 +439,11 @@ def showTimeScoreLevel(current_time):
         #Draws Score
         textUI.drawText("Score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
         #Draws bullet energy
-        textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+        if energyLevel > 2 * bulletCost:
+            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+        else:
+            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+
 
 def spawnBullets(x,y):
     global bullets
@@ -376,11 +454,39 @@ def gameOverSceneMainGameLoop():
     #Draws retry and main menu button
     retryButton.draw()
     menuButton.draw()   
+    textUI.drawText("The humans went extinct!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
 
     #Restarts game and sends to main menu once buttons are clicked
     #Needs to be fixed (loadScene doesnt work properly)
-    if retryButton.checkClicked() == True:
+    if retryButton.checkClicked(loadedSceneTime) == True:
         loadScene("testScene")
 
-    if menuButton.checkClicked() == True:
+    if menuButton.checkClicked(loadedSceneTime) == True:
         loadScene("startscreen")
+
+def planetMainGameLoop():
+    planet.draw()
+    textUI.drawText("New planet found!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-500)
+    textUI.drawText("Chance of survival: " + str(survivalChance), textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+    landButton.draw()
+    continueButton.draw()
+
+    if landButton.checkClicked(loadedSceneTime):
+        if random.randint(100, 100) > survivalChance:
+            #Humans zijn dood
+            loadScene("gameOver")
+        else:
+            loadScene("gameGewonnen")
+
+    if continueButton.checkClicked(loadedSceneTime):
+        #Bypass dat alles wordt gereset door de functie direct te callen ipv loadScene functie
+        global currentScene, delayTime
+        delayTime = delayTime + pygame.time.get_ticks() - loadedSceneTime
+        loadTestScene(False)
+        currentScene = "testScene"
+    
+def gameGewonnenMainLoop():
+    textUI.drawText("The humans survived!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+    menuButton.draw()
+    if menuButton.checkClicked(loadedSceneTime):
+        loadScene("startscreesn")

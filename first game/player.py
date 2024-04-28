@@ -35,24 +35,25 @@ def loadPlayer():
     player.center = (playerX+(playerWidht/2), playerY+(playerHeight/2))
 
 spacePressed = False
+ePressed = False
 
 #Moves the character with wasd and makes sure the character doesn't go out of the screen regardless of the resolution
 def update_movement():
     key = pygame.key.get_pressed()
-    global playerX, playerY, character, spacePressed
+    global playerX, playerY, character, spacePressed, ePressed
 
     if (key[pygame.K_a] == True) and (playerX > 0):
-        player.move_ip(-movementspeed,0)
-        playerX -= movementspeed
+        player.move_ip(-movementspeed * 60/settings.fps,0)
+        playerX -= movementspeed * 60/settings.fps
     if (key[pygame.K_w] == True) and (playerY - movementspeed > 0):
-        player.move_ip(0,-movementspeed)
-        playerY -= movementspeed
+        player.move_ip(0,-movementspeed * 60/settings.fps)
+        playerY -= movementspeed * 60/settings.fps
     if (key[pygame.K_s] == True) and (playerY < resolution[1] - playerHeight):
-        player.move_ip(0,movementspeed)
-        playerY += movementspeed
+        player.move_ip(0,movementspeed * 60/settings.fps)
+        playerY += movementspeed * 60/settings.fps
     if (key[pygame.K_d] == True) and (playerX < (resolution[0]-playerWidht)):
-        player.move_ip(movementspeed,0)
-        playerX += movementspeed
+        player.move_ip(movementspeed * 60/settings.fps,0)
+        playerX += movementspeed * 60/settings.fps
     if(key[pygame.K_SPACE] == True and not spacePressed):
         spacePressed = True
         if(scenehandler.energyLevel - scenehandler.bulletCost >= 0):
@@ -60,6 +61,11 @@ def update_movement():
             scenehandler.energyLevel = scenehandler.energyLevel - scenehandler.bulletCost
     elif(not key[pygame.K_SPACE]):
         spacePressed = False
+    if(key[pygame.K_e] == True and not ePressed):
+        ePressed = True
+        scenehandler.loadScene("planet")
+    elif(not key[pygame.K_e]):
+        ePressed = False
 
 
     #MOET UIT DE GAME ALS HIJ AF IS, DIT ZORGT ERVOOR DAT JE EEN PUZZEL IN JE SCHERM KRIJGT ALS JE P INDRUKT

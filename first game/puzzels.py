@@ -22,7 +22,7 @@ intervalBetweenSquares = 350
 startEersteGame = 0
 
 def loadRandomPuzzel():
-    randomPuzzel = random.randint(1,numberOfPuzzels)
+    randomPuzzel = random.randint(2,numberOfPuzzels)
     global currentPuzzel
     match randomPuzzel:
         case 1:

@@ -1,6 +1,6 @@
 import pygame, scenehandler, settings, puzzels, textUI, cv2
 
-playIntro = True
+playIntro = False
 
 def playOpeningVid():
     if playIntro:
@@ -22,7 +22,7 @@ def playOpeningVid():
                 cv2.imshow('Video', frame) 
                 cv2.waitKey(33)
                 if cv2.waitKey(33) == 27:
-                    break
+                    break     
             else: 
                 break
         cap.release() 
@@ -71,3 +71,8 @@ def initGame():
 if __name__ == "__main__":
     initPygame()
     playOpeningVid()
+
+
+    
+
+

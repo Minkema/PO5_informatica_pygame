@@ -19,4 +19,3 @@ volume = volumeList[0]
 
 def applysettings():
     pygame.mixer_music.set_volume(volume/100)
-
