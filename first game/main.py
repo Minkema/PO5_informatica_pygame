@@ -21,6 +21,8 @@ def playOpeningVid():
                 cv2.setWindowProperty('Video', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
                 cv2.imshow('Video', frame) 
                 cv2.waitKey(33)
+                if cv2.waitKey(33) == 27:
+                    break
             else: 
                 break
         cap.release() 
@@ -69,8 +71,3 @@ def initGame():
 if __name__ == "__main__":
     initPygame()
     playOpeningVid()
-
-
-    
-
-
