@@ -51,7 +51,7 @@ def loadScene(scenename):
     if(scenename == "SettingsScreen"):
         LoadSettingsScene()
     if(scenename == "planet"):
-        LoadPlanetScene()    
+        LoadPlanetScene()  
 
 def loadTestScene(resetValues):
     player.loadPlayer()
@@ -131,9 +131,8 @@ def LoadSettingsScene():
     tempDifficulty = settings.difficulty
     tempVolume = settings.volume
 
-
 def loadGameOverScene():
-    global  background, retryButton, menuButton
+    global background, retryButton, menuButton
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/GameOver Screen/GameOver.png')
@@ -142,8 +141,6 @@ def loadGameOverScene():
         print("Game Over screen failed to load")
 
     #Loads the music in pygame so that it can be used later in the scene loop
-    #Er moet nieuwe muziek hier toegevoegd worden
-    #pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
     try:
         retryButton_img = pygame.image.load('Textures/GameOver Screen/retryButton.png').convert_alpha()
@@ -219,6 +216,7 @@ def mainGameLoop():
 
     if currentScene == "planet":
         planetMainGameLoop()
+
     if currentScene == "gameGewonnen":
         gameGewonnenMainLoop()
     
@@ -237,7 +235,7 @@ def mainGameLoop():
         music_active = False
 
     if currentScene == "SettingsScreen":   
-        global selectedTab , tempResolution, tempFramerate, tempDifficulty, tempVolume
+        global selectedTab, tempResolution, tempFramerate, tempDifficulty, tempVolume
 
         if selectedTab == 0:
             Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(153, 204, 255),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
@@ -268,9 +266,9 @@ def mainGameLoop():
 
 
         textUI.drawText(str(tempResolution[0]) +" X "+str(tempResolution[1]), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
-        textUI.drawText((str(settings.fps)+"FPS"), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
-        textUI.drawText(str(settings.difficulty), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
-        textUI.drawText(str(settings.volume), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
+        textUI.drawText((str(tempFramerate)+"FPS"), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+        textUI.drawText(str(tempDifficulty), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+        textUI.drawText(str(tempVolume), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -285,12 +283,59 @@ def mainGameLoop():
                     if selectedTab < 0:
                         selectedTab = len(TabList)-1
                 elif event.key == pygame.K_RIGHT:
-                    print(settingsList[selectedTab])
+                    
+                    if selectedTab == 0:
+                        nextResolution = settings.resolutionList.index(tempResolution)+1
+                        if nextResolution > len(settings.resolutionList)-1:
+                            nextResolution = 0
+                        tempResolution = settings.resolutionList[nextResolution]
+
+                    if selectedTab == 1:
+                        nextFramerate = settings.fpsList.index(tempFramerate)+1
+                        if nextFramerate > len(settings.fpsList)-1:
+                            nextFramerate = 0
+                        tempFramerate = settings.fpsList[nextFramerate]
+
+                    if selectedTab == 2:
+                        nextDifficulty = settings.difficultyList.index(tempDifficulty)+1
+                        if nextDifficulty > len(settings.difficultyList)-1:
+                            nextDifficulty = 0
+                        tempDifficulty = settings.difficultyList[nextDifficulty]
+
+                    if selectedTab == 3:
+                        nextVolume = settings.volumeList.index(tempVolume)+1
+                        if nextVolume > len(settings.volumeList)-1:
+                            nextVolume = 0
+                        tempVolume = settings.volumeList[nextVolume]
+
                 elif event.key == pygame.K_LEFT:
-                    print(settingsList[selectedTab])
+                    
+                    if selectedTab == 0:
+                        nextResolution = settings.resolutionList.index(tempResolution)-1
+                        if nextResolution < 0:
+                            nextResolution = len(settings.resolutionList)-1
+                        tempResolution = settings.resolutionList[nextResolution]
+
+                    if selectedTab == 1:
+                        nextFramerate = settings.fpsList.index(tempFramerate)-1
+                        if nextFramerate < 0:
+                            nextFramerate = len(settings.fpsList)-1
+                        tempFramerate = settings.fpsList[nextFramerate]
+
+                    if selectedTab == 2:
+                        nextDifficulty = settings.difficultyList.index(tempDifficulty)-1
+                        if nextDifficulty < 0:
+                            nextDifficulty = len(settings.difficultyList)-1
+                        tempDifficulty = settings.difficultyList[nextDifficulty]
+
+                    if selectedTab == 3:
+                        nextVolume = settings.volumeList.index(tempVolume)-1
+                        if nextVolume < 0:
+                            nextVolume = len(settings.volumeList)-1
+                        tempVolume = settings.volumeList[nextVolume]
+
                 elif event.key == pygame.K_a:
                     settings.applysettings()
-
 
 def startSceneMainGameLoop():
     #Draw de daadwerkelijke knoppen
@@ -428,7 +473,6 @@ def showTimeScoreLevel(current_time):
     elif currentScore >= 5000 + 1000 * amountOfPlanets:
         currentLevel = 6 + amountOfPlanets
         loadScene("planet")
-
     
     #De timer moet niet worden laten zien als we bezig zijn met een puzzel
     if not stopAstroids:
@@ -443,7 +487,6 @@ def showTimeScoreLevel(current_time):
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
         else:
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
-
 
 def spawnBullets(x,y):
     global bullets
@@ -484,7 +527,7 @@ def planetMainGameLoop():
         delayTime = delayTime + pygame.time.get_ticks() - loadedSceneTime
         loadTestScene(False)
         currentScene = "testScene"
-    
+
 def gameGewonnenMainLoop():
     textUI.drawText("The humans survived!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
     menuButton.draw()
