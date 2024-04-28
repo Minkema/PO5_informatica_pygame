@@ -532,4 +532,4 @@ def gameGewonnenMainLoop():
     textUI.drawText("The humans survived!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
     menuButton.draw()
     if menuButton.checkClicked(loadedSceneTime):
-        loadScene("startscreesn")
+        loadScene("startscreen")
