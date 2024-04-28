@@ -100,6 +100,7 @@ def checkSolEerste():
         currentPuzzel = "none"
         #increases score gain if puzzle has been completed succesfully
         scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+        scenehandler.energyLevel = scenehandler.energyLevel + 25
         ResetEerstePuzzel()
         return
 
@@ -199,7 +200,7 @@ def keybindPuzzle():
     if (currentNum == 10):
         #increases score gain if puzzle has been completed succesfully
         scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
-
+        scenehandler.energyLevel = scenehandler.energyLevel + 25
         currentPuzzel = "none"
         resetKeybindPuzzel()
         return
