@@ -1,6 +1,6 @@
 import pygame, scenehandler, settings, puzzels, textUI, cv2
 
-playIntro = False
+playIntro = True
 
 def playOpeningVid():
     if playIntro:
