@@ -62,7 +62,7 @@ def loadTestScene():
 
     #Tries to load the specific background textures
     try:
-        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background_image = pygame.image.load('Textures/MainGame/Background.png')
         background = pygame.transform.scale(background_image, settings.resolution)
     #if loading fails it will print that in the console
     except pygame.error as e:
@@ -98,6 +98,11 @@ def loadStartScene():
 
 def LoadSettingsScene():
     global background
+    global tempResolution
+    global tempFramerate
+    global tempDifficulty
+    global tempVolume
+
     try:
         background_image = pygame.image.load('Textures/Settings/Settings_Background.png')
         background = pygame.transform.scale(background_image, settings.resolution)
@@ -106,6 +111,11 @@ def LoadSettingsScene():
         print("startscreen couldn't load")
 
     pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
+
+    tempResolution = settings.resolution
+    tempFramerate = settings.fps
+    tempDifficulty = settings.difficulty
+    tempVolume = settings.volume
 
 def loadGameOverScene():
     global astroids, background, retryButton, menuButton
@@ -117,8 +127,6 @@ def loadGameOverScene():
         print("Game Over screen failed to load")
 
     #Loads the music in pygame so that it can be used later in the scene loop
-    #Er moet nieuwe muziek hier toegevoegd worden
-    #pygame.mixer.music.load('Audio\Startscreen\startscreen.mp3')
 
     try:
         retryButton_img = pygame.image.load('Textures/GameOver Screen/retryButton.png').convert_alpha()
@@ -159,27 +167,39 @@ def mainGameLoop():
 
     if currentScene == "SettingsScreen":   
         global selectedTab 
+
         if selectedTab == 0:
             Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(153, 204, 255),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
             Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
             Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+            Tab4 = textUI.drawText("<Volume>", textUI.settingsFont,(140, 141, 143),(262/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
         
         if selectedTab == 1:
             Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
             Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(153, 204, 255),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
             Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+            Tab4 = textUI.drawText("<Volume>", textUI.settingsFont,(140, 141, 143),(262/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
 
         if selectedTab == 2:
             Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
             Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
             Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(153, 204, 255),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+            Tab4 = textUI.drawText("<Volume>", textUI.settingsFont,(140, 141, 143),(262/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
 
-        TabList = [Tab1, Tab2, Tab3]
-        settingsList = [settings.resolution, settings.fps, settings.difficulty]
+        if selectedTab == 3:
+            Tab1 = textUI.drawText("<Resolution>", textUI.settingsFont,(140, 141, 143),(300/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+            Tab2 = textUI.drawText("<FrameRate>", textUI.settingsFont,(140, 141, 143),(295/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
+            Tab3 = textUI.drawText("<Difficulty>", textUI.settingsFont,(140, 141, 143),(278/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+            Tab4 = textUI.drawText("<Volume>", textUI.settingsFont,(153, 204, 255),(262/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
 
-        textUI.drawText((str(settings.resolution[0])+" X "+str(settings.resolution[1])), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
+        TabList = [Tab1, Tab2, Tab3,Tab4]
+        settingsList = [tempResolution, tempFramerate, tempDifficulty, tempVolume]
+
+
+        textUI.drawText(str(tempResolution[0]) +" X "+str(tempResolution[1]), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(200/1080*settings.resolution[1]))
         textUI.drawText((str(settings.fps)+"FPS"), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(300/1080*settings.resolution[1]))
         textUI.drawText(str(settings.difficulty), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(400/1080*settings.resolution[1]))
+        textUI.drawText(str(settings.volume), textUI.settingsFont,(153, 204, 255),(650/1920*settings.resolution[0]),(500/1080*settings.resolution[1]))
 
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -196,7 +216,9 @@ def mainGameLoop():
                 elif event.key == pygame.K_RIGHT:
                     print(settingsList[selectedTab])
                 elif event.key == pygame.K_LEFT:
-                    print("left arrow key pressed")
+                    print(settingsList[selectedTab])
+                elif event.key == pygame.K_a:
+                    settings.applysettings()
 
 def startSceneMainGameLoop():
     #Draw de daadwerkelijke knoppen
