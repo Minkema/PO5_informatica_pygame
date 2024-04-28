@@ -16,26 +16,26 @@ class ImageButton():
             #draw button on screen
             screen.blit(self.image, (self.rect.x, self.rect.y))
         
-        def checkClicked(self):
+        def checkClicked(self, time):
             #Als de muisknop niet wordt ingedrukt kunnen we direct uit deze functie returnen met false want dan kan een knop nooit worden ingedrukt
+            if pygame.time.get_ticks() - time > 500:
+                if not pygame.mouse.get_pressed()[0]:
+                    self.Clicked = False
+                    return False
+                
+                #get mouse position
+                mousepos = pygame.mouse.get_pos()
+                
+                #Als de muis niet op de knop staat kunnen we er ook uit returnen met false
+                if(not self.rect.collidepoint(mousepos)):
+                    return False
+                
+                #Als hij al wordt ingeclickt is de functie die dat gebeurd al gecalled en hoeft dat niet nog een keer te gebeuren dus returnen we false
+                if(self.Clicked):
+                    return False
 
-            if not pygame.mouse.get_pressed()[0]:
-                self.Clicked = False
-                return False
-            
-            #get mouse position
-            mousepos = pygame.mouse.get_pos()
-            
-            #Als de muis niet op de knop staat kunnen we er ook uit returnen met false
-            if(not self.rect.collidepoint(mousepos)):
-                return False
-            
-            #Als hij al wordt ingeclickt is de functie die dat gebeurd al gecalled en hoeft dat niet nog een keer te gebeuren dus returnen we false
-            if(self.Clicked):
-                return False
-
-            #Alles is er nu al uitgefilterd dus dan moet de speler wel op onze knop klikken voor de eerste keer en en returnen we true
-            return True
+                #Alles is er nu al uitgefilterd dus dan moet de speler wel op onze knop klikken voor de eerste keer en en returnen we true
+                return True
 
 #Button class waar een rect wordt gemaakt met al een gekozen kleur. Dit is vooral handing voor de puzzels maar kan ook worden gebruikt ergens anders        
 class PuzzelButton():

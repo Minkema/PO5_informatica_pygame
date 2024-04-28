@@ -12,7 +12,7 @@ class Bullet:
         self.secondAlive = True
 
     def draw(self):
-        self.y = self.y - self.velocity
+        self.y = self.y - self.velocity * 60 / settings.fps
         self.rect1.y = self.y
         self.rect2.y = self.y
         if self.firstAlive:
