@@ -1,4 +1,4 @@
-import settings, pygame, scenehandler
+import settings, pygame, scenehandler,random
 
 
 class Astroid:
@@ -8,11 +8,17 @@ class Astroid:
         self.y = y
         self.velocity = velocity * scenehandler.speedMultiplier
         self.isPuzzel = isPuzzel
+        self.radius = random.randint(38, 42)
+        if isPuzzel:
+            self.image = pygame.image.load("Textures/MainGame/asteroidpuzzel.png")
+            self.image = pygame.transform.scale(self.image, (self.radius*2, self.radius*2))
+        else:
+            self.image = pygame.image.load("Textures/MainGame/asteroid" + str(random.randint(1,3)) + ".png")
+            self.image = pygame.transform.scale(self.image, (self.radius*2, self.radius*2))
         
     #Draw de daadwerkelijke astroid
     def draw(self):
-        if self.isPuzzel : pygame.draw.circle(settings.screen, (255,0,0), (self.x, self.y + self.velocity * 60/settings.fps), 20)
-        elif not self.isPuzzel : pygame.draw.circle(settings.screen, (0,0,0), (self.x, self.y + self.velocity * 60/settings.fps), 20)
+        settings.screen.blit(self.image, (self.x - self.image.get_width() / 2, self.y - self.image.get_height() / 2 + self.velocity))
         self.y = self.y + self.velocity
 
 
