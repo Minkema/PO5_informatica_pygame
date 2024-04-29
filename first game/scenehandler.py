@@ -21,6 +21,7 @@ planet = 0
 amountOfPlanets = 0
 survivalChance = 0
 loadedSceneTime = 0
+amountOfAstroids = 0
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
 godMode = True
@@ -55,7 +56,7 @@ def loadScene(scenename):
 
 def loadTestScene(resetValues):
     player.loadPlayer()
-    global background
+    global background, interval, amountOfAstroids
 
     if resetValues:
         global isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
@@ -74,6 +75,23 @@ def loadTestScene(resetValues):
         bullets = []
         energyLevel = 50
 
+    match(settings.difficultyList.index(settings.difficulty)):
+        case 0:
+            #Easy
+            interval = 1500
+            amountOfAstroids = 3
+        case 1:
+            #Medium
+            interval = 1000
+            amountOfAstroids = 4
+        case 2:
+            #Hard
+            interval = 800
+            amountOfAstroids = 5
+        case 3:
+            #Antje
+            interval = 1500
+            amountOfAstroids = 3
     #Tries to load the specific background textures
     try:
         background_image = pygame.image.load('Textures/MainGame/Background.png')
@@ -359,9 +377,6 @@ def startSceneMainGameLoop():
 #Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
 laatsteTick = 0
 
-#Daadswerkelijke interval
-interval = 1000
-
 def testSceneMainGameLoop():
     global afterStopAstroids, astroids, bullets
     #Comments about these functions are at the functions declarations
@@ -373,7 +388,7 @@ def testSceneMainGameLoop():
 
     current_time = pygame.time.get_ticks()
     if current_time - laatsteTick >= interval:
-        for i in range(5):
+        for i in range(amountOfAstroids):
             if (not isDead and not stopAstroids):
                 laatsteTick = current_time
                 if(random.randint(0, 25) == 5):
@@ -410,10 +425,10 @@ def testSceneMainGameLoop():
         bullet = bullets[i]
         for j in range(len(astroids)):
             astroid = astroids[j]
-            if bullet.rect1.colliderect(astroid.x - 20, astroid.y - 20, 20*2, 20*2) and bullet.firstAlive:
+            if bullet.rect1.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2) and bullet.firstAlive:
                 listOfDeletedAstroids.append(j)
                 bullet.firstAlive = False
-            if bullet.rect2.colliderect(astroid.x - 20, astroid.y - 20, 20*2, 20*2) and bullet.secondAlive:
+            if bullet.rect2.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2) and bullet.secondAlive:
                 listOfDeletedAstroids.append(j)
                 bullet.secondAlive = False
 
@@ -439,7 +454,7 @@ def checkCol():
     deletedAstroids = []
     for i in range(len(astroids)):
         astroid = astroids[i]
-        if playerRect.colliderect(astroid.x - 20, astroid.y - 20, 20*2, 20*2):
+        if playerRect.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2):
             if not astroid.isPuzzel:
                 if(not godMode):
                     isDead = True
@@ -458,21 +473,21 @@ def showTimeScoreLevel(current_time):
     currentScore = round((current_time - startTime - delayTime) / 60 * scoreMultiplier, 0) 
 
     #Increases level once score threshold has been met
-    if currentScore <= 1000:
+    if currentScore <= 500:
         currentLevel = 1
-    elif currentScore <= 2000 and currentScore >= 1000:
+    elif currentScore <= 1000 and currentScore >= 500:
         currentLevel = 2
         speedMultiplier = 1.5
-    elif currentScore <= 3000 and currentScore >= 2000:
+    elif currentScore <= 1500 and currentScore >= 1000:
         currentLevel = 3
         speedMultiplier = 2
-    elif currentScore <= 4000 and currentScore >= 3000:
+    elif currentScore <= 2000 and currentScore >= 1500:
         currentLevel = 4
         speedMultiplier = 2.5
-    elif currentScore <= 5000 and currentScore >= 4000:
+    elif currentScore <= 2500 and currentScore >= 2000:
         currentLevel = 5
         speedMultiplier = 3
-    elif currentScore >= 5000 + 1000 * amountOfPlanets:
+    elif currentScore >= 2500 + 500 * amountOfPlanets:
         currentLevel = 6 + amountOfPlanets
         loadScene("planet")
     
