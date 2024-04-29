@@ -419,7 +419,7 @@ def testSceneMainGameLoop():
     for i in range(len(astroids)):
         astroid = astroids[i]
         #Detect of de astroids buiten het scherm zij
-        if(astroid.y > settings.resolution[1]):
+        if(astroid.y > settings.resolution[1] + 20):
             listOfDeletedAstroids.append(i)
         astroid.draw()
 
@@ -442,12 +442,12 @@ def testSceneMainGameLoop():
     #Delete de astroids van de vorige frame
     currentOffset = 0
     for i in range(len(listOfDeletedAstroids)):
-        astroids.pop(listOfDeletedAstroids[i - currentOffset])
+        astroids.pop(listOfDeletedAstroids[i]-currentOffset)
         currentOffset = currentOffset + 1
 
     currentOffset = 0
     for i in range(len(listOfDeletedBullets)):           
-        bullets.pop(listOfDeletedBullets[i - currentOffset])
+        bullets.pop(listOfDeletedBullets[i]-currentOffset)
         currentOffset = currentOffset + 1
 
 def checkCol():
