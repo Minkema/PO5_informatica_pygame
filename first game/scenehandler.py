@@ -58,6 +58,8 @@ def loadTestScene(resetValues):
     player.loadPlayer()
     global background, interval, amountOfAstroids
 
+    pygame.mixer.music.load('Audio\MainGame\MainGame.mp3')
+
     if resetValues:
         global isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
         #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
