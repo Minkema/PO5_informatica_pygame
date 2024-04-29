@@ -1,4 +1,4 @@
-import pygame, settings, player, random, puzzels, textUI
+import pygame, settings, player, random, puzzels, textUI, main
 from astroids import Astroid
 from astroids import Planet
 from button import ImageButton
@@ -111,11 +111,7 @@ def loadStartScene():
     Exitbutton = ImageButton(((300/1920)*settings.resolution[0]),((750/1920)*settings.resolution[0]), ExitButton_img)
 
 def LoadSettingsScene():
-    global background
-    global tempResolution
-    global tempFramerate
-    global tempDifficulty
-    global tempVolume
+    global background, tempResolution, tempFramerate, tempDifficulty, tempVolume
 
     try:
         background_image = pygame.image.load('Textures/Settings/Settings_Background.png')
@@ -336,6 +332,12 @@ def mainGameLoop():
 
                 elif event.key == pygame.K_a:
                     settings.applysettings()
+
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
+                
+                if event.type == pygame.QUIT:
+                    main.run = False
 
 def startSceneMainGameLoop():
     #Draw de daadwerkelijke knoppen
