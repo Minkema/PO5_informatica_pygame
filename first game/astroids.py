@@ -19,6 +19,7 @@ class Astroid:
     #Draw de daadwerkelijke astroid
     def draw(self):
         settings.screen.blit(self.image, (self.x - self.image.get_width() / 2, self.y - self.image.get_height() / 2 + self.velocity))
+
         self.y = self.y + self.velocity
 
 
