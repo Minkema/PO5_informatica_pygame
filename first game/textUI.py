@@ -3,13 +3,15 @@ import pygame, settings
 testFont = 0
 settingsFont = 0
 survivedFont = 0
+mathFont = 0
 
 #De testfont moet worden geassigned, als je dit niet in deze functie doet, doet pygame moeilijk
 def init():
-    global testFont, settingsFont, survivedFont
+    global testFont, settingsFont, survivedFont, mathFont
     testFont = pygame.font.SysFont("Arial", 30, bold=True)
     settingsFont = pygame.font.SysFont("Arial", 50, bold=True)
     survivedFont = pygame.font.SysFont("Arial", 40, bold=True)
+    mathFont = pygame.font.SysFont("Arial", 50, bold=True)
 
 #Eigenlijk maken we een image van de tekst en blitten we die daarna zoals altijd
 def drawText(text, font, text_col, x,y):
