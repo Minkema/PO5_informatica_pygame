@@ -27,6 +27,7 @@ previousScore = 0
 amountOfAsteroids = 0
 currentLevel = 1
 previousLevel = 1
+inPuzzle = False
 
 Startbutton = 0
 Settingsbutton = 0
@@ -482,13 +483,13 @@ def mainSceneMainGameLoop():
         currentOffset = currentOffset + 1
 
 def checkCol():
-    global isDead
+    global isDead, inPuzzle
     playerRect = player.player
     deletedAsteroids = []
     for i in range(len(asteroids)):
         astroid = asteroids[i]
         if playerRect.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2):
-            if not astroid.isPuzzel:
+            if not astroid.isPuzzel and not inPuzzle:
                 isDead = True
                 loadScene("gameOver")
             elif astroid.isPuzzel:
@@ -496,6 +497,7 @@ def checkCol():
                 global stopAsteroids, stopAsteroidsTijd
                 stopAsteroids = True
                 stopAsteroidsTijd = pygame.time.get_ticks()
+                inPuzzle = True
         
     for i in range(len(deletedAsteroids)):
         asteroids.pop(deletedAsteroids[i])

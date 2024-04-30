@@ -111,6 +111,8 @@ def checkSolEerste():
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle end
         endPuzzleTime = pygame.time.get_ticks()
+        #Turns collision on
+        scenehandler.inPuzzle = False
         return
 
     #Check continue of knoppen worden geclicked
@@ -215,6 +217,8 @@ def keybindPuzzle():
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle ended
         endPuzzleTime = pygame.time.get_ticks()
+        #turns collision on
+        scenehandler.inPuzzle = False
         resetKeybindPuzzel()
         return
     
@@ -349,6 +353,8 @@ def mathsPuzzle():
                 scenehandler.stopAsteroidsTijd = 0
                 #sets score prior to level
                 scenehandler.previousScore = scenehandler.currentScore
+                #turns collision on
+                scenehandler.inPuzzle = False
             #fails puzzle if wrong answer was chosen
             else:
                 currentPuzzel = "none"
