@@ -198,14 +198,14 @@ def LoadPlanetScene():
     survivalChance = 50 + random.randint(minChance, maxChance)
 
     try:
-        landButton_img = pygame.image.load('Textures/StartScreen/StartButton.png').convert_alpha()
-        continueButton_img = pygame.image.load('Textures/StartScreen/SettingsButton.png').convert_alpha()
+        landButton_img = pygame.image.load('Textures/Planets/StartCivilizationButton.png').convert_alpha()
+        continueButton_img = pygame.image.load('Textures/Planets/FindNewPlanetButton.png').convert_alpha()
     except pygame.error as e:
         print("button images couldn't load")
 
     #creating button instance
-    landButton = ImageButton(((480/1920)*settings.resolution[0]),((700/1920)*settings.resolution[0]), landButton_img)
-    continueButton = ImageButton(((960/1920)*settings.resolution[0]),((700/1920)*settings.resolution[0]), continueButton_img)    
+    landButton = ImageButton(((240/1920)*settings.resolution[0]),((800/1920)*settings.resolution[0]), landButton_img)
+    continueButton = ImageButton(((1080/1920)*settings.resolution[0]),((800/1920)*settings.resolution[0]), continueButton_img)    
 
     global background
     try:
@@ -232,7 +232,7 @@ def loadGameGewonnenScene():
         print("button images couldn't load")
 
     #creating button instance
-    menuButton = ImageButton(((779/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+    menuButton = ImageButton(((660/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
     #resets some values
     amountOfPlanets = 0
 
@@ -606,6 +606,8 @@ def planetMainGameLoop():
 
 def gameGewonnenMainLoop():
     textUI.drawText("The humans survived!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+    textUI.drawText("Your score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+    textUI.drawText("Time survived: "+ str(secondsTimer) + "s", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
     menuButton.draw()
     if menuButton.checkClicked(loadedSceneTime):
         loadScene("startscreen")
