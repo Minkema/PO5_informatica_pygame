@@ -63,7 +63,7 @@ def loadMainScene(resetValues):
     pygame.mixer.music.load('Audio\MainGame\MainGame.mp3')
 
     if resetValues:
-        global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, asteroids, bullets, energyLevel
+        global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, asteroids, bullets, energyLevel, currentScore, speedMultiplier, scoreMultiplier
         #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
         startTime = pygame.time.get_ticks()
 
@@ -78,6 +78,9 @@ def loadMainScene(resetValues):
         asteroids = []
         bullets = []
         energyLevel = 50
+        currentScore = 0
+        speedMultiplier = 1
+        scoreMultiplier = 1
 
     match(settings.difficultyList.index(settings.difficulty)):
         case 0:
@@ -510,9 +513,9 @@ def showTimeScoreLevel(current_time):
 
         #calculates current score
         if puzzels.endPuzzleTime == 0:
-            currentScore = round((current_time - retryTime - delayTime) / 60 * scoreMultiplier, 0)
+            currentScore = round((current_time - retryTime - delayTime- loadedSceneTime) / 60 * scoreMultiplier, 0)
         else:
-            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime) / 60 * scoreMultiplier, 0)
+            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime - loadedSceneTime) / 60 * scoreMultiplier, 0)
 
         #Increases level once score threshold has been met
         if currentScore <= 500:
