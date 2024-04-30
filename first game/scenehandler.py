@@ -103,6 +103,10 @@ def loadTestScene(resetValues):
             if currentLevel == 1:
                 interval = 1500
                 amountOfAstroids = 3
+
+    if(settings.resolutionList.index(settings.resolution) == 4):
+        amountOfAstroids = amountOfAstroids *2
+    
     #Tries to load the specific background textures
     try:
         background_image = pygame.image.load('Textures/MainGame/Background.png')
@@ -503,9 +507,9 @@ def showTimeScoreLevel(current_time):
 
         #calculates current score
         if puzzels.endPuzzleTime == 0:
-            currentScore = round((current_time - retryTime) / 60 * scoreMultiplier, 0)
+            currentScore = round((current_time - retryTime - delayTime) / 60 * scoreMultiplier, 0)
         else:
-            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime) / 60 * scoreMultiplier, 0)
+            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime) / 60 * scoreMultiplier, 0)
 
         #Increases level once score threshold has been met
         if currentScore <= 500:
@@ -552,12 +556,12 @@ def showTimeScoreLevel(current_time):
         #Draws Time
         textUI.drawText(str(secondsTimer) + "s", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
         #Draws Score
-        textUI.drawText("Score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+        textUI.drawText("Score: "+ str(currentScore), textUI.testFont , (255,255,255), 120/1920*settings.resolution[0], settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
         #Draws bullet energy
         if energyLevel > 2 * bulletCost:
-            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), 120/1920*settings.resolution[0], settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
         else:
-            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+            textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), 120/1920*settings.resolution[0], settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
 
 
 
