@@ -10,10 +10,16 @@ class Astroid:
         self.isPuzzel = isPuzzel
         self.radius = random.randint(38, 42)
         if isPuzzel:
-            self.image = pygame.image.load("Textures/MainGame/asteroidpuzzel.png")
+            if(settings.difficultyList.index(settings.difficulty) != 3):
+                self.image = pygame.image.load("Textures/MainGame/asteroidpuzzel.png")
+            else:
+                self.image = pygame.image.load("Textures/AntjeMode/PartyPopper.png")
             self.image = pygame.transform.scale(self.image, (self.radius*2, self.radius*2))
         else:
-            self.image = pygame.image.load("Textures/MainGame/asteroid" + str(random.randint(1,3)) + ".png")
+            if(settings.difficultyList.index(settings.difficulty) != 3):
+                self.image = pygame.image.load("Textures/MainGame/asteroid" + str(random.randint(1,3)) + ".png")
+            else:
+                self.image = pygame.image.load("Textures/AntjeMode/Cake.png")
             self.image = pygame.transform.scale(self.image, (self.radius*2, self.radius*2))
         
     #Draw de daadwerkelijke astroid
