@@ -446,8 +446,13 @@ def testSceneMainGameLoop():
                 listOfDeletedAstroids.append(j)
                 bullet.firstAlive = False
             if bullet.rect2.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2) and bullet.secondAlive:
-                listOfDeletedAstroids.append(j)
-                bullet.secondAlive = False
+                if(len(listOfDeletedAstroids) != 0):
+                    if(listOfDeletedAstroids[len(listOfDeletedAstroids)-1] != j):
+                        listOfDeletedAstroids.append(j)
+                        bullet.secondAlive = False
+                else:
+                    listOfDeletedAstroids.append(j)
+                    bullet.secondAlive = False
 
         #Detect of de astroids buiten het scherm zij
         if(bullet.y < 0):
@@ -544,14 +549,10 @@ def showTimeScoreLevel(current_time):
         else:
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
 
-
-
-
 def spawnBullets(x,y):
     global bullets
     bullet = Bullet(x,y) 
     bullets.append(bullet)
-    print(puzzels.puzzleTime)
 
 def gameOverSceneMainGameLoop():
     #Draws retry and main menu button
