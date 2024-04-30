@@ -37,6 +37,7 @@ def loadRandomPuzzel():
         case 3:
             mathsLoadPuzzle()
             currentPuzzel = "mathsPuzzle"
+            startPuzzleTime = pygame.time.get_ticks()
 
         case _:
             print("Error random puzzel out of bounds")
@@ -148,7 +149,6 @@ def ResetEerstePuzzel():
     buttonsClicked = [False, False, False, False]
     scenehandler.stopAstroids = False
     scenehandler.afterStopAstroids = False
-    scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
     scenehandler.stopAstroidsTijd = 0
 
 def startCountdown(timeInBetween):
@@ -257,7 +257,6 @@ def resetKeybindPuzzel():
 
     scenehandler.stopAstroids = False
     scenehandler.afterStopAstroids = False
-    scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
     scenehandler.stopAstroidsTijd = 0
 
 
@@ -323,6 +322,16 @@ def mathsPuzzle():
     global mathString, answerButtons, correctNum, currentPuzzel, endPuzzleTime
     #Draws the math problem
     drawText(mathString, textUI.mathFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 20 )
+    if settings.difficultyList.index(settings.difficulty) == 3:
+        if timerMath(20):
+            currentPuzzel = "none"
+            endPuzzleTime = 0
+            scenehandler.loadScene("gameOver")
+    else:
+        if timerMath(10):
+            currentPuzzel = "none"
+            endPuzzleTime = 0
+            scenehandler.loadScene("gameOver")
     #draws buttons
     for i in range(0, 4):
         answerButtons[i].draw(answerList[i])
@@ -337,7 +346,6 @@ def mathsPuzzle():
                 #Resets asteroids
                 scenehandler.stopAstroids = False
                 scenehandler.afterStopAstroids = False
-                scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
                 scenehandler.stopAstroidsTijd = 0
                 #sets score prior to level
                 scenehandler.previousScore = scenehandler.currentScore
@@ -347,3 +355,15 @@ def mathsPuzzle():
                 endPuzzleTime = 0
                 scenehandler.loadScene("gameOver")
 
+def timerMath(tijd):
+    timeInBetween = pygame.time.get_ticks() - startPuzzleTime
+
+    highest = 0
+    for i in range(tijd+1):
+        if(timeInBetween > i * 1000):
+            highest = tijd -i
+    if highest != 0:
+        drawText(str(highest), textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+        return False
+    else:
+        return True
