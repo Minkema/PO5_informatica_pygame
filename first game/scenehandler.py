@@ -522,7 +522,7 @@ def gameOverSceneMainGameLoop():
     #Draws retry and main menu button
     retryButton.draw()
     menuButton.draw()   
-    textUI.drawText("The humans went extinct!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+    textUI.drawText("Mankind went extinct!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
 
     #Restarts game and sends to main menu once buttons are clicked
     #Needs to be fixed (loadScene doesnt work properly)
