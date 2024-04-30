@@ -29,7 +29,7 @@ currentLevel = 1
 previousLevel = 1
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
-godMode = True
+godMode = False
 
 Startbutton = 0
 Settingsbutton = 0
@@ -213,7 +213,7 @@ def LoadPlanetScene():
 
     global background
     try:
-        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background_image = pygame.image.load('Textures/MainGame/Background.png')
         background = pygame.transform.scale(background_image, settings.resolution)
     #if loading fails it will print that in the console
     except pygame.error as e:
@@ -225,7 +225,7 @@ def loadGameGewonnenScene():
     global  background, menuButton, amountOfPlanets
     #Loads the background for game over scene
     try:
-        background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
+        background_image = pygame.image.load('Textures/MainGame/Background.png')
         background = pygame.transform.scale(background_image, settings.resolution)
     except pygame.error as e:
         print("Game Over screen failed to load")
@@ -387,6 +387,9 @@ def startSceneMainGameLoop():
     Startbutton.draw()
     Settingsbutton.draw()
     Exitbutton.draw()
+
+    if(settings.difficultyList.index(settings.difficulty) == 3):
+        textUI.drawText("Gefeliciteerd Mvr. Roestenburg!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
 
     #Check voor of er op de knoppen wordt gelickt. Hoe dit precies werkt staat in de button class.
     if Startbutton.checkClicked(loadedSceneTime):
