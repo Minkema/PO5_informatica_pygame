@@ -1,6 +1,5 @@
 import pygame, settings, scenehandler
 from astroids import Astroid
-from settings import resolution
 
 screen = settings.screen
 
@@ -53,10 +52,10 @@ def update_movement():
     if (key[pygame.K_w] == True) and (playerY - movementspeed > 0):
         player.move_ip(0,-movementspeed * speedBoost * 60/settings.fps)
         playerY -= movementspeed * speedBoost * 60/settings.fps
-    if (key[pygame.K_s] == True) and (playerY < resolution[1] - playerHeight):
+    if (key[pygame.K_s] == True) and (playerY < settings.resolution[1] - playerHeight):
         player.move_ip(0,movementspeed * speedBoost * 60/settings.fps)
         playerY += movementspeed * speedBoost * 60/settings.fps
-    if (key[pygame.K_d] == True) and (playerX < (resolution[0]-playerWidht)):
+    if (key[pygame.K_d] == True) and (playerX < (settings.resolution[0]-playerWidht)):
         player.move_ip(movementspeed * speedBoost * 60/settings.fps,0)
         playerX += movementspeed * speedBoost * 60/settings.fps
     #spawns bullets
