@@ -149,7 +149,7 @@ def LoadSettingsScene():
     tempVolume = settings.volume
 
 def loadGameOverScene():
-    global background, retryButton, menuButton, puzzleTime
+    global background, retryButton, menuButton, puzzleTime, amountOfPlanets
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/GameOver Screen/GameOver.png')
@@ -168,6 +168,9 @@ def loadGameOverScene():
     #creating button instance
     retryButton = ImageButton(((300/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), retryButton_img)
     menuButton = ImageButton(((1000/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+
+    #resets some values
+    amountOfPlanets = 0
     
 
 def LoadPlanetScene():
@@ -180,7 +183,9 @@ def LoadPlanetScene():
         maxChance = 50
     if minChance < 0:
         minChance = 0
-    survivalChance = 50 + random.randint(0, maxChance)
+    if minChance > 40:
+        minChance = 40
+    survivalChance = 50 + random.randint(minChance, maxChance)
 
     try:
         landButton_img = pygame.image.load('Textures/StartScreen/StartButton.png').convert_alpha()
@@ -203,7 +208,7 @@ def LoadPlanetScene():
     pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
 
 def loadGameGewonnenScene():
-    global  background, menuButton
+    global  background, menuButton, amountOfPlanets
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/StartScreen/homescreen.png')
@@ -218,6 +223,8 @@ def loadGameGewonnenScene():
 
     #creating button instance
     menuButton = ImageButton(((779/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+    #resets some values
+    amountOfPlanets = 0
 
 def mainGameLoop():
     settings.screen.blit(background, (0,0))
@@ -540,7 +547,7 @@ def planetMainGameLoop():
     continueButton.draw()
 
     if landButton.checkClicked(loadedSceneTime):
-        if random.randint(100, 100) > survivalChance:
+        if random.randint(0, 100) > survivalChance:
             #Humans zijn dood
             loadScene("gameOver")
         else:
