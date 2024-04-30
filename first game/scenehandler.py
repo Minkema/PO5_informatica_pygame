@@ -412,6 +412,8 @@ def mainSceneMainGameLoop():
     global laatsteTick
 
     current_time = pygame.time.get_ticks()
+    if current_time - loadedSceneTime < 5000:
+        textUI.drawText("Use WASD to move, spacebar to shoot and shift to get a boost", textUI.testFont, (225,225,225), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-150)
     if current_time - laatsteTick >= interval:
         for i in range(amountOfAsteroids):
             if (not isDead and not stopAsteroids):
