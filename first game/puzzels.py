@@ -97,15 +97,15 @@ YellowButton = PuzzelButton(pygame.Rect(100 + settings.resolution[0] / 2, settin
 buttons = [RedButton, GreenButton, BlueButton, YellowButton]
 
 def checkSolEerste():
-    drawText("Click de vakjes in de juiste volgorde", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
+    drawText("Choose the squares in the right order", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
     global currentNum, currentPuzzel, endPuzzleTime  
     
     #Player heeft ze goed opgelost
     if(currentNum == 4):
         currentPuzzel = "none"
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
-        scenehandler.energyLevel = scenehandler.energyLevel + 25
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+        scenehandler.energyLevel = scenehandler.energyLevel + 20
         ResetEerstePuzzel()
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
@@ -147,21 +147,21 @@ def ResetEerstePuzzel():
     posOfButtonsY = [0,0,0,0]
 
     buttonsClicked = [False, False, False, False]
-    scenehandler.stopAstroids = False
-    scenehandler.afterStopAstroids = False
-    scenehandler.stopAstroidsTijd = 0
+    scenehandler.stopAsteroids = False
+    scenehandler.afterStopAsteroids = False
+    scenehandler.stopAsteroidsTijd = 0
 
 def startCountdown(timeInBetween):
     if(timeInBetween < 1000):
-        drawText("Onthoud de volgorde!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+        drawText("Remember the order!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
         drawText("3", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
         return False
     if(timeInBetween < 2000):
-        drawText("Onthoud de volgorde!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+        drawText("Remember the order!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
         drawText("2", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
         return False
     if(timeInBetween < 3000):
-        drawText("Onthoud de volgorde!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+        drawText("Remember the order!", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
         drawText("1", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
         return False
 
@@ -208,8 +208,8 @@ def keybindPuzzle():
     #Stops puzzle once correctly completed
     if (currentNum == 10):
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
-        scenehandler.energyLevel = scenehandler.energyLevel + 25
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+        scenehandler.energyLevel = scenehandler.energyLevel + 20
         currentPuzzel = "none"
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
@@ -255,9 +255,9 @@ def resetKeybindPuzzel():
     inputKeyList = []
     inputLetterList = []
 
-    scenehandler.stopAstroids = False
-    scenehandler.afterStopAstroids = False
-    scenehandler.stopAstroidsTijd = 0
+    scenehandler.stopAsteroids = False
+    scenehandler.afterStopAsteroids = False
+    scenehandler.stopAsteroidsTijd = 0
 
 
 #variables for math puzzle
@@ -339,14 +339,14 @@ def mathsPuzzle():
             if answerList[i] == correctNum:
                 currentPuzzel = "none"
                 #increases score gain if puzzle has been completed succesfully
-                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
-                scenehandler.energyLevel = scenehandler.energyLevel + 25
+                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+                scenehandler.energyLevel = scenehandler.energyLevel + 20
                 #Gets time when puzzle ended
                 endPuzzleTime = pygame.time.get_ticks()
                 #Resets asteroids
-                scenehandler.stopAstroids = False
-                scenehandler.afterStopAstroids = False
-                scenehandler.stopAstroidsTijd = 0
+                scenehandler.stopAsteroids = False
+                scenehandler.afterStopAsteroids = False
+                scenehandler.stopAsteroidsTijd = 0
                 #sets score prior to level
                 scenehandler.previousScore = scenehandler.currentScore
             #fails puzzle if wrong answer was chosen

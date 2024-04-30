@@ -1,5 +1,4 @@
 import pygame, settings, scenehandler
-from astroids import Astroid
 
 screen = settings.screen
 
@@ -37,7 +36,6 @@ def loadPlayer():
     player.center = (playerX+(playerWidht/2), playerY+(playerHeight/2))
 
 spacePressed = False
-ePressed = False
 speedBoost = 1
 counter = 0
 
@@ -75,18 +73,6 @@ def update_movement():
             scenehandler.energyLevel = scenehandler.energyLevel - 1
     else:
         speedBoost = 1
-
-    #loads planet scene (needs to be removed)
-    if(key[pygame.K_e] == True and not ePressed):
-        ePressed = True
-        scenehandler.loadScene("planet")
-    elif(not key[pygame.K_e]):
-        ePressed = False
-
-    #MOET UIT DE GAME ALS HIJ AF IS, DIT ZORGT ERVOOR DAT JE EEN PUZZEL IN JE SCHERM KRIJGT ALS JE P INDRUKT
-    if (key[pygame.K_p] == True and not scenehandler.stopAstroids):
-        scenehandler.stopAstroids = True
-        scenehandler.stopAstroidsTijd = pygame.time.get_ticks()
 
 #Draws the acual texture on the player
 def drawerPlayerTexture():
