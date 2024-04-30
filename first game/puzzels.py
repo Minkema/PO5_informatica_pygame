@@ -107,7 +107,7 @@ def checkSolEerste():
     if(currentNum == 4):
         currentPuzzel = "none"
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
         scenehandler.energyLevel = scenehandler.energyLevel + 25
         ResetEerstePuzzel()
         #Gets time spent in puzzle
@@ -211,7 +211,7 @@ def keybindPuzzle():
     #Stops puzzle once correctly completed
     if (currentNum == 10):
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
         scenehandler.energyLevel = scenehandler.energyLevel + 25
         currentPuzzel = "none"
         #Gets time spent in puzzle
@@ -243,7 +243,7 @@ def keybindPuzzle():
     #Draws random letter order on screen
     drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
     #Says where random text x-cords start
-    extraWidth = int(drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )) + 2
+    extraWidth = int(drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )) 
     #shows which letters have been typed
     drawTextNotCentered(keystring2, textUI.testFont, (255,0,0), settings.resolution[0] / 2 - extraWidth, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
 
@@ -332,7 +332,7 @@ def mathsPuzzle():
             if answerList[i] == correctNum:
                 currentPuzzel = "none"
                 #increases score gain if puzzle has been completed succesfully
-                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 1
                 scenehandler.energyLevel = scenehandler.energyLevel + 25
                 #Gets time spent in puzzle
                 endPuzzleTime = pygame.time.get_ticks()
