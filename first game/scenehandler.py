@@ -3,6 +3,7 @@ from astroids import Astroid
 from astroids import Planet
 from button import ImageButton
 from bullet import Bullet
+from puzzels import puzzleTime
 
 currentScene = "default"
 music_active = False
@@ -148,7 +149,7 @@ def LoadSettingsScene():
     tempVolume = settings.volume
 
 def loadGameOverScene():
-    global background, retryButton, menuButton
+    global background, retryButton, menuButton, puzzleTime
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/GameOver Screen/GameOver.png')
@@ -167,6 +168,7 @@ def loadGameOverScene():
     #creating button instance
     retryButton = ImageButton(((300/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), retryButton_img)
     menuButton = ImageButton(((1000/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+    
 
 def LoadPlanetScene():
     global planet, amountOfPlanets, survivalChance, landButton, continueButton
@@ -444,6 +446,7 @@ def testSceneMainGameLoop():
     for i in range(len(listOfDeletedAstroids)):
         astroids.pop(listOfDeletedAstroids[i]-currentOffset)
         currentOffset = currentOffset + 1
+        
 
     currentOffset = 0
     for i in range(len(listOfDeletedBullets)):           
@@ -471,9 +474,11 @@ def checkCol():
         astroids.pop(deletedAstroids[i])    
 
 def showTimeScoreLevel(current_time):
-    global currentScore, currentLevel, speedMultiplier, scoreMultiplier
-    currentScore = round((current_time - startTime - delayTime) / 60 * scoreMultiplier, 0) 
-
+    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime
+    currentScore = round((current_time  - startTime - delayTime - puzzels.puzzleTime) / 60 * scoreMultiplier, 0)
+    if currentScore < 0:
+        currentScore = 0
+    #print(puzzleTime)
     #Increases level once score threshold has been met
     if currentScore <= 500:
         currentLevel = 1
@@ -511,6 +516,7 @@ def spawnBullets(x,y):
     global bullets
     bullet = Bullet(x,y) 
     bullets.append(bullet)
+    print(puzzels.puzzleTime)
 
 def gameOverSceneMainGameLoop():
     #Draws retry and main menu button

@@ -1,9 +1,10 @@
 import random, pygame, settings, textUI, scenehandler
 from textUI import drawText, drawTextNotCentered
-from button import PuzzelButton
+from button import PuzzelButton, MathImageButton
 
-numberOfPuzzels = 2
+numberOfPuzzels = 3
 currentPuzzel = "none"
+puzzleTime = 0
 
 #Dit is allemaal voor de eerste puzzel:
 
@@ -19,22 +20,27 @@ squaresRect = pygame.Rect(settings.resolution[0] / 2 - squareWidth / 2, settings
 
 #Hoeveel tijd er tussen de vierkanten op het scherm zit bij de eerste puzzel
 intervalBetweenSquares = 350
-startEersteGame = 0
+startPuzzleTime = 0
+endPuzzleTime = 0
 
 def loadRandomPuzzel():
     randomPuzzel = random.randint(1,numberOfPuzzels)
-    global currentPuzzel
+    global currentPuzzel, startPuzzleTime
     match randomPuzzel:
         case 1:
-            global startEersteGame
-
             loadEerstePuzzel()
-            startEersteGame = pygame.time.get_ticks()
+            startPuzzleTime = pygame.time.get_ticks()
             currentPuzzel = "eerste"
         
-        case 2: 
+        case 2:
             keybindPuzzleLoad()
             currentPuzzel = "keybindPuzzle"
+            startPuzzleTime = pygame.time.get_ticks()
+        
+        case 3:
+            mathsLoadPuzzle()
+            currentPuzzel = "mathsPuzzle"
+            startPuzzleTime = pygame.time.get_ticks()
 
         case _:
             print("Error random puzzel out of bounds")
@@ -51,7 +57,7 @@ def mainGameLoop():
         currentTime = pygame.time.get_ticks()
         
         #De 3000 staat voor de 3 seconde die verloren gaan in de countdown. Die 3 seconden moeten we negeren
-        timeInBetween = currentTime - startEersteGame - 3000
+        timeInBetween = currentTime - startPuzzleTime - 3000
 
         #De startcountdown functie return false als hij nog bezig is met de countdown. Als hij al klaar is return hij true en kunnen we verder.
         if startCountdown(timeInBetween + 3000):
@@ -71,8 +77,10 @@ def mainGameLoop():
                 checkSolEerste()
     
     elif(currentPuzzel == "keybindPuzzle"):
-        currentTime = pygame.time.get_ticks()
         keybindPuzzle()
+    
+    elif(currentPuzzel == "mathsPuzzle"):
+        mathsPuzzle()
 
 #Hoeveel de speler er al goed heeft
 currentNum = 0
@@ -93,7 +101,7 @@ buttons = [RedButton, GreenButton, BlueButton, YellowButton]
 
 def checkSolEerste():
     drawText("Click de vakjes in de juiste volgorde", textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
-    global currentNum, currentPuzzel    
+    global currentNum, currentPuzzel, endPuzzleTime, puzzleTime    
     
     #Player heeft ze goed opgelost
     if(currentNum == 4):
@@ -102,6 +110,10 @@ def checkSolEerste():
         scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
         scenehandler.energyLevel = scenehandler.energyLevel + 25
         ResetEerstePuzzel()
+        #Gets time spent in puzzle
+        endPuzzleTime = pygame.time.get_ticks()
+        puzzleTime = puzzleTime + (endPuzzleTime - startPuzzleTime)
+        print(puzzleTime)
         return
 
     #Check continue of knoppen worden geclicked
@@ -192,7 +204,7 @@ def keybindPuzzleLoad():
 #mainloop for keybind puzzle
 def keybindPuzzle():
 
-    global currentPuzzel, currentNum, currentIndex, keystring
+    global currentPuzzel, currentNum, currentIndex, keystring, puzzleTime
     events = pygame.event.get()
     keystring2 = keystring[0:currentIndex + 1]
 
@@ -202,6 +214,10 @@ def keybindPuzzle():
         scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
         scenehandler.energyLevel = scenehandler.energyLevel + 25
         currentPuzzel = "none"
+        #Gets time spent in puzzle
+        endPuzzleTime = pygame.time.get_ticks()
+        puzzleTime = puzzleTime + (endPuzzleTime - startPuzzleTime)
+        print(puzzleTime)
         resetKeybindPuzzel()
         return
     
@@ -227,7 +243,7 @@ def keybindPuzzle():
     #Draws random letter order on screen
     drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
     #Says where random text x-cords start
-    extraWidth = drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
+    extraWidth = int(drawText(keystring, textUI.testFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )) + 2
     #shows which letters have been typed
     drawTextNotCentered(keystring2, textUI.testFont, (255,0,0), settings.resolution[0] / 2 - extraWidth, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 50 )
 
@@ -245,3 +261,89 @@ def resetKeybindPuzzel():
     scenehandler.afterStopAstroids = False
     scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
     scenehandler.stopAstroidsTijd = 0
+
+
+#variables for math puzzle
+correctNum = 0
+operatorRandom = 0
+operatorList = [" + ", " - ", " / ", " x "]
+firstRandomNum = 0
+secondRandomNum = 0
+answerTwo = 0
+answerThree = 0
+answerFour = 0
+answerList = []
+mathString = ""
+answerButtons = []
+topRight = 0
+topLeft = 0
+bottomRight = 0
+bottomLeft = 0
+
+def mathsLoadPuzzle():
+    global operatorRandom, correctNum, firstRandomNum, secondRandomNum, answerList, mathString, answerTwo, answerThree, answerFour, answerButtons
+    #chooses random operator
+    operatorRandom = random.randint(0, 3)
+    #chooses random numbers
+    firstRandomNum = random.randint(1, 100)
+    secondRandomNum = random.randint(1, 100)
+    #finds correct answer
+    if operatorRandom == 0:
+        correctNum = firstRandomNum + secondRandomNum
+    elif operatorRandom == 1:
+        correctNum = firstRandomNum - secondRandomNum
+    elif operatorRandom == 2:
+        correctNum = round(firstRandomNum / secondRandomNum, 1)
+    elif operatorRandom == 3:
+        correctNum = firstRandomNum * secondRandomNum
+    mathString = str(firstRandomNum) + operatorList[operatorRandom] + str(secondRandomNum) + " ="
+
+    #Creates list with 4 possible answers (1 correct)
+    answerTwo = correctNum + random.randint(0, 40)
+    answerThree = correctNum - random.randint(0, 40)
+    answerFour = round(correctNum * random.randint(2, 3), 1)
+
+    answerList = [correctNum, answerTwo, answerThree, answerFour]
+    #randomizes the order of answerList
+    random.shuffle(answerList)
+
+    #Loads image for buttons
+    try:
+        answerButtons_img = pygame.image.load('Textures/Puzzles/backgroundText.png').convert_alpha()
+    except pygame.error as e:
+        print("button images couldn't load")
+    
+    #creating button instance
+    topRight = MathImageButton((100 + settings.resolution[0] / 2),(-200 + settings.resolution[1]/ 2), answerButtons_img)
+    topLeft = MathImageButton((-350 + settings.resolution[0] / 2),(-200 + settings.resolution[1]/ 2), answerButtons_img)
+    bottomRight = MathImageButton((100 + settings.resolution[0] / 2),(200 + settings.resolution[1]/ 2), answerButtons_img)
+    bottomLeft = MathImageButton((-350 + settings.resolution[0] / 2),(200 + settings.resolution[1]/ 2), answerButtons_img)
+
+    answerButtons = [topRight, topLeft, bottomRight, bottomLeft]
+
+def mathsPuzzle():
+    global mathString, answerButtons, correctNum, currentPuzzel, puzzleTime
+    #Draws the math problem
+    drawText(mathString, textUI.mathFont, (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 * 20 )
+    #draws buttons
+    for i in range(0, 4):
+        answerButtons[i].draw(answerList[i])
+        if (answerButtons[i].checkClicked(0)):
+            if answerList[i] == correctNum:
+                currentPuzzel = "none"
+                #increases score gain if puzzle has been completed succesfully
+                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
+                scenehandler.energyLevel = scenehandler.energyLevel + 25
+                #Gets time spent in puzzle
+                endPuzzleTime = pygame.time.get_ticks()
+                puzzleTime = puzzleTime + (endPuzzleTime - startPuzzleTime)
+                print(puzzleTime)
+                #Resets asteroids
+                scenehandler.stopAstroids = False
+                scenehandler.afterStopAstroids = False
+                scenehandler.delayTime = pygame.time.get_ticks() - scenehandler.stopAstroidsTijd
+                scenehandler.stopAstroidsTijd = 0
+            else:
+                currentPuzzel = "none"
+                scenehandler.loadScene("gameOver")
+
