@@ -23,6 +23,8 @@ amountOfPlanets = 0
 survivalChance = 0
 loadedSceneTime = 0
 amountOfAstroids = 0
+currentLevel = 1
+previousLevel = 1
 
 #!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
 godMode = True
@@ -81,20 +83,24 @@ def loadTestScene(resetValues):
     match(settings.difficultyList.index(settings.difficulty)):
         case 0:
             #Easy
-            interval = 1500
-            amountOfAstroids = 3
+            if currentLevel == 1:
+                interval = 1500
+                amountOfAstroids = 3
         case 1:
             #Medium
-            interval = 1000
-            amountOfAstroids = 4
+            if currentLevel == 1:
+                interval = 1000
+                amountOfAstroids = 4
         case 2:
             #Hard
-            interval = 800
-            amountOfAstroids = 5
+            if currentLevel == 1:
+                interval = 800
+                amountOfAstroids = 5
         case 3:
             #Antje
-            interval = 1500
-            amountOfAstroids = 3
+            if currentLevel == 1:
+                interval = 1500
+                amountOfAstroids = 3
     #Tries to load the specific background textures
     try:
         background_image = pygame.image.load('Textures/MainGame/Background.png')
@@ -205,7 +211,7 @@ def LoadPlanetScene():
     except pygame.error as e:
         print("startscreen couldn't load")
 
-    pygame.mixer.music.load('Audio\Settings\SettingsPage.mp3')
+    pygame.mixer.music.load('Audio/Settings/SettingsPage.mp3')
 
 def loadGameGewonnenScene():
     global  background, menuButton, amountOfPlanets
@@ -402,7 +408,7 @@ def testSceneMainGameLoop():
         for i in range(amountOfAstroids):
             if (not isDead and not stopAstroids):
                 laatsteTick = current_time
-                if(random.randint(0, 25) == 5):
+                if(random.randint(3, 25) <= 5):
                     astroid = Astroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), True)
                 else:
                     astroid = Astroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), False)
@@ -481,7 +487,7 @@ def checkCol():
         astroids.pop(deletedAstroids[i])    
 
 def showTimeScoreLevel(current_time):
-    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime
+    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime, interval, previousLevel, amountOfAstroids
     currentScore = round((current_time  - startTime - delayTime - puzzels.puzzleTime) / 60 * scoreMultiplier, 0)
     if currentScore < 0:
         currentScore = 0
@@ -489,22 +495,41 @@ def showTimeScoreLevel(current_time):
     #Increases level once score threshold has been met
     if currentScore <= 500:
         currentLevel = 1
+        speedMultiplier = 1
     elif currentScore <= 1000 and currentScore >= 500:
         currentLevel = 2
         speedMultiplier = 1.5
+        #decreases interval of asteroid spawn
+        if currentLevel == previousLevel + 1:
+            previousLevel = currentLevel
+            interval = interval - 50
     elif currentScore <= 1500 and currentScore >= 1000:
         currentLevel = 3
         speedMultiplier = 2
+        #decreases interval of asteroid spawn
+        if currentLevel == previousLevel + 1:
+            previousLevel = currentLevel
+            interval = interval - 50
     elif currentScore <= 2000 and currentScore >= 1500:
         currentLevel = 4
         speedMultiplier = 2.5
+        #decreases interval and amount of asteroid spawn
+        if currentLevel == previousLevel + 1:
+            previousLevel = currentLevel
+            interval = interval - 100
+            amountOfAstroids = amountOfAstroids + 1
     elif currentScore <= 2500 and currentScore >= 2000:
         currentLevel = 5
         speedMultiplier = 3
+        #decreases interval and amount of asteroid spawn
+        if currentLevel == previousLevel + 1:
+            previousLevel = currentLevel
+            interval = interval - 100
+            amountOfAstroids = amountOfAstroids + 1
     elif currentScore >= 2500 + 500 * amountOfPlanets:
         currentLevel = 6 + amountOfPlanets
         loadScene("planet")
-    
+
     #De timer moet niet worden laten zien als we bezig zijn met een puzzel
     if not stopAstroids:
         #Draws Level
@@ -518,6 +543,9 @@ def showTimeScoreLevel(current_time):
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
         else:
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), settings.resolution[0] - 1800, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+
+
+
 
 def spawnBullets(x,y):
     global bullets
