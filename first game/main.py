@@ -47,7 +47,6 @@ def initGame():
     
     #Inits the scene
     scenehandler.loadScene("startscreen")
-    #scenehandler.loadScene("testScene")
     
     run = True
     

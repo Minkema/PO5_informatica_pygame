@@ -1,17 +1,17 @@
 import pygame, settings, player, random, puzzels, textUI, main
-from astroids import Astroid
-from astroids import Planet
+from asteroids import Asteroid
+from asteroids import Planet
 from button import ImageButton
 from bullet import Bullet
 
 currentScene = "default"
 music_active = False
-astroids = []
+asteroids = []
 bullets = []
 isDead = False
-stopAstroids = False
-stopAstroidsTijd = 0
-afterStopAstroids = False
+stopAsteroids = False
+stopAsteroidsTijd = 0
+afterStopAsteroids = False
 delayTime = 0
 speedMultiplier = 1
 scoreMultiplier = 1
@@ -24,12 +24,9 @@ loadedSceneTime = 0
 secondsTimer = 0
 retryTime = 0
 previousScore = 0
-amountOfAstroids = 0
+amountOfAsteroids = 0
 currentLevel = 1
 previousLevel = 1
-
-#!!!! Alleen voor development !!!!!! MOET FALSE ZIJN ALS HET SPEL KLAAR IS ANDERS KAN JE NIET DOOD GAAN
-godMode = False
 
 Startbutton = 0
 Settingsbutton = 0
@@ -48,8 +45,8 @@ def loadScene(scenename):
 
     if(scenename == "startscreen"):
         loadStartScene()
-    if(scenename == "testScene"):
-        loadTestScene(True)
+    if(scenename == "mainScene"):
+        loadMainScene(True)
     if(scenename == "gameOver"):
         loadGameOverScene()
     if(scenename == "gameGewonnen"):
@@ -59,14 +56,14 @@ def loadScene(scenename):
     if(scenename == "planet"):
         LoadPlanetScene()  
 
-def loadTestScene(resetValues):
+def loadMainScene(resetValues):
     player.loadPlayer()
-    global background, interval, amountOfAstroids
+    global background, interval, amountOfAsteroids
 
     pygame.mixer.music.load('Audio\MainGame\MainGame.mp3')
 
     if resetValues:
-        global isDead, startTime, laatsteTick, stopAstroids, afterStopAstroids, delayTime, astroids, bullets, energyLevel
+        global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, asteroids, bullets, energyLevel
         #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
         startTime = pygame.time.get_ticks()
 
@@ -75,10 +72,10 @@ def loadTestScene(resetValues):
 
         #Resets all the values for if the game has been started before
         isDead = False
-        stopAstroids = False
-        afterStopAstroids = False
+        stopAsteroids = False
+        afterStopAsteroids = False
         delayTime = 0
-        astroids = []
+        asteroids = []
         bullets = []
         energyLevel = 50
 
@@ -87,25 +84,25 @@ def loadTestScene(resetValues):
             #Easy
             if currentLevel == 1:
                 interval = 1500
-                amountOfAstroids = 3
+                amountOfAsteroids = 3
         case 1:
             #Medium
             if currentLevel == 1:
                 interval = 1000
-                amountOfAstroids = 4
+                amountOfAsteroids = 4
         case 2:
             #Hard
             if currentLevel == 1:
                 interval = 800
-                amountOfAstroids = 5
+                amountOfAsteroids = 5
         case 3:
             #Antje
             if currentLevel == 1:
                 interval = 1500
-                amountOfAstroids = 3
+                amountOfAsteroids = 3
 
     if(settings.resolutionList.index(settings.resolution) == 4):
-        amountOfAstroids = amountOfAstroids *2
+        amountOfAsteroids = amountOfAsteroids *2
     
     #Tries to load the specific background textures
     try:
@@ -184,7 +181,7 @@ def loadGameOverScene():
     #resets some values
     amountOfPlanets = 0
     previousScore = 0
-    scoreMultiplier = 0
+    scoreMultiplier = 1
     
 
 def LoadPlanetScene():
@@ -247,8 +244,8 @@ def mainGameLoop():
     if currentScene == "startscreen":
         startSceneMainGameLoop()
 
-    if currentScene == "testScene":
-        testSceneMainGameLoop()
+    if currentScene == "mainScene":
+        mainSceneMainGameLoop()
 
     if currentScene == "gameOver":
         gameOverSceneMainGameLoop()
@@ -393,7 +390,7 @@ def startSceneMainGameLoop():
 
     #Check voor of er op de knoppen wordt gelickt. Hoe dit precies werkt staat in de button class.
     if Startbutton.checkClicked(loadedSceneTime):
-        loadScene("testScene")
+        loadScene("mainScene")
 
     if Settingsbutton.checkClicked(loadedSceneTime):
         loadScene("SettingsScreen")
@@ -405,75 +402,75 @@ def startSceneMainGameLoop():
 #Deze wordt om de interval geupdate zodat we dingen kunnen laten spawnen om de zoveel seconden
 laatsteTick = 0
 
-def testSceneMainGameLoop():
-    global afterStopAstroids, astroids, bullets
+def mainSceneMainGameLoop():
+    global afterStopAsteroids, asteroids, bullets
     #Comments about these functions are at the functions declarations
-    #afterstopAstroids staat iets verder naar beneden uitgelegd
-    if(not afterStopAstroids):
+    #afterstopAsteroids staat iets verder naar beneden uitgelegd
+    if(not afterStopAsteroids):
         player.update_movement()
         player.drawerPlayerTexture()
     global laatsteTick
 
     current_time = pygame.time.get_ticks()
     if current_time - laatsteTick >= interval:
-        for i in range(amountOfAstroids):
-            if (not isDead and not stopAstroids):
+        for i in range(amountOfAsteroids):
+            if (not isDead and not stopAsteroids):
                 laatsteTick = current_time
                 if(random.randint(3, 25) <= 5):
-                    astroid = Astroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), True)
+                    astroid = Asteroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), True)
                 else:
-                    astroid = Astroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), False)
-                astroids.append(astroid)
+                    astroid = Asteroid(random.randint(0, settings.resolution[0]), 0, random.uniform(1,4), False)
+                asteroids.append(astroid)
     
-    #Oke dit kan confusing zijn maar stopAstroids = true zodra een puzzel wordt gecalled. afterStopAstroids is pas true na een bepaalde timer zodat de player nog ff wat tijd heeft 
-    #om astroids te ontwijken
-    if(stopAstroids and not afterStopAstroids):
-        textUI.drawText("Er komt een puzzel aan wees ready!", textUI.testFont, (225,225,225), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
-        if (current_time - stopAstroidsTijd >= 2000):
+    #Oke dit kan confusing zijn maar stopAsteroids = true zodra een puzzel wordt gecalled. afterStopAsteroids is pas true na een bepaalde timer zodat de player nog ff wat tijd heeft 
+    #om asteroids te ontwijken
+    if(stopAsteroids and not afterStopAsteroids):
+        textUI.drawText("Puzzle incoming, be ready!", textUI.testFont, (225,225,225), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-100)
+        if (current_time - stopAsteroidsTijd >= 2000):
             puzzels.loadRandomPuzzel()
-            afterStopAstroids = True
+            afterStopAsteroids = True
     
 
     checkCol()
     #Print time, score and level on screen
     showTimeScoreLevel(current_time)
 
-    #Lijst van astroids die de volgende frame weg moeten
-    listOfDeletedAstroids = []
+    #Lijst van asteroids die de volgende frame weg moeten
+    listOfDeletedAsteroids = []
     listOfDeletedBullets = []
 
-    for i in range(len(astroids)):
-        astroid = astroids[i]
-        #Detect of de astroids buiten het scherm zij
+    for i in range(len(asteroids)):
+        astroid = asteroids[i]
+        #Detect of de asteroids buiten het scherm zij
         if(astroid.y > settings.resolution[1] + 20):
-            listOfDeletedAstroids.append(i)
+            listOfDeletedAsteroids.append(i)
         astroid.draw()
 
     for i in range(len(bullets)):
         bullet = bullets[i]
-        for j in range(len(astroids)):
-            astroid = astroids[j]
+        for j in range(len(asteroids)):
+            astroid = asteroids[j]
             if bullet.rect1.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2) and bullet.firstAlive:
-                listOfDeletedAstroids.append(j)
+                listOfDeletedAsteroids.append(j)
                 bullet.firstAlive = False
             if bullet.rect2.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2) and bullet.secondAlive:
-                if(len(listOfDeletedAstroids) != 0):
-                    if(listOfDeletedAstroids[len(listOfDeletedAstroids)-1] != j):
-                        listOfDeletedAstroids.append(j)
+                if(len(listOfDeletedAsteroids) != 0):
+                    if(listOfDeletedAsteroids[len(listOfDeletedAsteroids)-1] != j):
+                        listOfDeletedAsteroids.append(j)
                         bullet.secondAlive = False
                 else:
-                    listOfDeletedAstroids.append(j)
+                    listOfDeletedAsteroids.append(j)
                     bullet.secondAlive = False
 
-        #Detect of de astroids buiten het scherm zij
+        #Detect of de asteroids buiten het scherm zij
         if(bullet.y < 0):
             listOfDeletedBullets.append(i)
         bullet.draw()
 
-    #Delete de astroids van de vorige frame
+    #Delete de asteroids van de vorige frame
     currentOffset = 0
-    for i in range(len(listOfDeletedAstroids)):
-        astroids.pop(listOfDeletedAstroids[i]-currentOffset)
+    for i in range(len(listOfDeletedAsteroids)):
+        asteroids.pop(listOfDeletedAsteroids[i]-currentOffset)
         currentOffset = currentOffset + 1
         
 
@@ -485,28 +482,27 @@ def testSceneMainGameLoop():
 def checkCol():
     global isDead
     playerRect = player.player
-    deletedAstroids = []
-    for i in range(len(astroids)):
-        astroid = astroids[i]
+    deletedAsteroids = []
+    for i in range(len(asteroids)):
+        astroid = asteroids[i]
         if playerRect.colliderect(astroid.x - astroid.radius, astroid.y - astroid.radius, astroid.radius*2, astroid.radius*2):
             if not astroid.isPuzzel:
-                if(not godMode):
-                    isDead = True
-                    loadScene("gameOver")
+                isDead = True
+                loadScene("gameOver")
             elif astroid.isPuzzel:
-                deletedAstroids.append(i)
-                global stopAstroids, stopAstroidsTijd
-                stopAstroids = True
-                stopAstroidsTijd = pygame.time.get_ticks()
+                deletedAsteroids.append(i)
+                global stopAsteroids, stopAsteroidsTijd
+                stopAsteroids = True
+                stopAsteroidsTijd = pygame.time.get_ticks()
         
-    for i in range(len(deletedAstroids)):
-        astroids.pop(deletedAstroids[i])
+    for i in range(len(deletedAsteroids)):
+        asteroids.pop(deletedAsteroids[i])
 
 def showTimeScoreLevel(current_time):
-    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime, interval, previousLevel, amountOfAstroids, secondsTimer, previousScore
+    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime, interval, previousLevel, amountOfAsteroids, secondsTimer, previousScore
 
     #De timer moet niet worden laten zien als we bezig zijn met een puzzel
-    if not stopAstroids:
+    if not stopAsteroids:
 
         #calculates current score
         if puzzels.endPuzzleTime == 0:
@@ -539,7 +535,7 @@ def showTimeScoreLevel(current_time):
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
                 interval = interval - 100
-                amountOfAstroids = amountOfAstroids + 1
+                amountOfAsteroids = amountOfAsteroids + 1
         elif currentScore <= 2500 and currentScore >= 2000:
             currentLevel = 5
             speedMultiplier = 3
@@ -547,7 +543,7 @@ def showTimeScoreLevel(current_time):
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
                 interval = interval - 100
-                amountOfAstroids = amountOfAstroids + 1
+                amountOfAsteroids = amountOfAsteroids + 1
         elif currentScore >= 2500 + 500 * amountOfPlanets:
             currentLevel = 6 + amountOfPlanets
             loadScene("planet")
@@ -580,11 +576,13 @@ def gameOverSceneMainGameLoop():
     retryButton.draw()
     menuButton.draw()   
     textUI.drawText("Mankind went extinct!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
+    textUI.drawText("Your score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
+    textUI.drawText("Time survived: "+ str(secondsTimer) + "s", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
 
     #Restarts game and sends to main menu once buttons are clicked
     #Needs to be fixed (loadScene doesnt work properly)
     if retryButton.checkClicked(loadedSceneTime) == True:
-        loadScene("testScene")
+        loadScene("mainScene")
         retryTime = pygame.time.get_ticks()
 
     if menuButton.checkClicked(loadedSceneTime) == True:
@@ -608,8 +606,8 @@ def planetMainGameLoop():
         #Bypass dat alles wordt gereset door de functie direct te callen ipv loadScene functie
         global currentScene, delayTime
         delayTime = delayTime + pygame.time.get_ticks() - loadedSceneTime
-        loadTestScene(False)
-        currentScene = "testScene"
+        loadMainScene(False)
+        currentScene = "mainScene"
 
 def gameGewonnenMainLoop():
     textUI.drawText("The humans survived!", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-400)
