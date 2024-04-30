@@ -18,9 +18,10 @@ difficulty = difficultyList[0]
 volume = volumeList[5]
 
 def applysettings():
-    global fps, resolution, difficulty, screen
+    global fps, resolution, difficulty, screen, volume
 
     pygame.mixer_music.set_volume(scenehandler.tempVolume/100)
+    volume = scenehandler.tempVolume
     fps = scenehandler.tempFramerate
     difficulty = scenehandler.tempDifficulty
     if resolution != scenehandler.tempResolution:
