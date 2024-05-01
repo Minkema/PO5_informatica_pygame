@@ -510,7 +510,7 @@ def showTimeScoreLevel(current_time):
 
         #calculates current score
         if puzzels.endPuzzleTime == 0:
-            currentScore = round((current_time - retryTime - delayTime- loadedSceneTime) / 60 * scoreMultiplier, 0)
+            currentScore = round((current_time - delayTime- loadedSceneTime) / 60 * scoreMultiplier, 0)
         else:
             currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime - loadedSceneTime) / 60 * scoreMultiplier, 0)
 
@@ -573,7 +573,6 @@ def spawnBullets(x,y):
     bullets.append(bullet)
 
 def gameOverSceneMainGameLoop():
-    global retryTime
     #Draws retry and main menu button
     retryButton.draw()
     menuButton.draw()   
@@ -585,7 +584,6 @@ def gameOverSceneMainGameLoop():
     #Needs to be fixed (loadScene doesnt work properly)
     if retryButton.checkClicked(loadedSceneTime) == True:
         loadScene("mainScene")
-        retryTime = pygame.time.get_ticks()
 
     if menuButton.checkClicked(loadedSceneTime) == True:
         loadScene("startscreen")
