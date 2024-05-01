@@ -40,8 +40,8 @@ continueButton = 0
 def loadScene(scenename):
     #All specific sceneloading stuff needs to be handeld here
     global currentScene, loadedSceneTime
-    loadedSceneTime = pygame.time.get_ticks()
     currentScene = scenename
+    loadedSceneTime = pygame.time.get_ticks()
 
     if(scenename == "startscreen"):
         loadStartScene()
@@ -180,7 +180,6 @@ def loadGameOverScene():
     #creating button instance
     retryButton = ImageButton(((300/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), retryButton_img)
     menuButton = ImageButton(((1000/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
-
     #resets some values
     amountOfPlanets = 0
     previousScore = 0
@@ -437,11 +436,9 @@ def mainSceneMainGameLoop():
             puzzels.loadRandomPuzzel()
             afterStopAsteroids = True
     
-
-    checkCol()
     #Print time, score and level on screen
     showTimeScoreLevel(current_time)
-
+    checkCol()
     #Lijst van asteroids die de volgende frame weg moeten
     listOfDeletedAsteroids = []
     listOfDeletedBullets = []
@@ -524,6 +521,7 @@ def showTimeScoreLevel(current_time):
         elif currentScore <= 1000 and currentScore >= 500:
             currentLevel = 2
             speedMultiplier = 1.5
+            loadScene("planet")
             #decreases interval of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
@@ -568,9 +566,6 @@ def showTimeScoreLevel(current_time):
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,255,255), 120/1920*settings.resolution[0], settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
         else:
             textUI.drawText("Energy: "+ str(energyLevel), textUI.testFont , (255,0,0), 120/1920*settings.resolution[0], settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
-
-
-
 
 def spawnBullets(x,y):
     global bullets
