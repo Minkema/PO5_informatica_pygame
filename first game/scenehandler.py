@@ -223,7 +223,7 @@ def LoadPlanetScene():
     pygame.mixer.music.load('Audio/Settings/SettingsPage.mp3')
 
 def loadGameGewonnenScene():
-    global  background, menuButton, amountOfPlanets
+    global  background, menuButton, amountOfPlanets, retryButton
     #Loads the background for game over scene
     try:
         background_image = pygame.image.load('Textures/MainGame/Background.png')
@@ -232,12 +232,14 @@ def loadGameGewonnenScene():
         print("Game Over screen failed to load")
 
     try:
+        retryButton_img = pygame.image.load('Textures/GameOver Screen/retryButton.png').convert_alpha()
         menuButton_img = pygame.image.load('Textures/GameOver Screen/menuButton.png').convert_alpha()
     except pygame.error as e:
         print("button images couldn't load")
 
     #creating button instance
-    menuButton = ImageButton(((660/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
+    retryButton = ImageButton(((300/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), retryButton_img)
+    menuButton = ImageButton(((1000/1920)*settings.resolution[0]),((680/1920)*settings.resolution[0]), menuButton_img)
     #resets some values
     amountOfPlanets = 0
 
@@ -613,5 +615,8 @@ def gameGewonnenMainLoop():
     textUI.drawText("Your score: "+ str(currentScore), textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-300)
     textUI.drawText("Time survived: "+ str(secondsTimer) + "s", textUI.testFont , (255,255,255), settings.resolution[0] / 2, settings.resolution[1] / 2 + settings.resolution[1] / 1080 *-200)
     menuButton.draw()
+    retryButton.draw()
+    if retryButton.checkClicked(loadedSceneTime) == True:
+        loadScene("mainScene")
     if menuButton.checkClicked(loadedSceneTime):
         loadScene("startscreen")
