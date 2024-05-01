@@ -25,19 +25,17 @@ startPuzzleTime = 0
 def loadRandomPuzzel():
     randomPuzzel = random.randint(1,numberOfPuzzels)
     global currentPuzzel, startPuzzleTime
+    startPuzzleTime = pygame.time.get_ticks()
     match randomPuzzel:
         case 1:
             loadEerstePuzzel()
             currentPuzzel = "eerste"
-            startPuzzleTime = pygame.time.get_ticks()
         case 2:
             keybindPuzzleLoad()
-            currentPuzzel = "keybindPuzzle"
-        
+            currentPuzzel = "keybindPuzzle"        
         case 3:
             mathsLoadPuzzle()
             currentPuzzel = "mathsPuzzle"
-            startPuzzleTime = pygame.time.get_ticks()
 
         case _:
             print("Error random puzzel out of bounds")
@@ -110,7 +108,7 @@ def checkSolEerste():
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle end
-        endPuzzleTime = pygame.time.get_ticks()
+        endPuzzleTime = pygame.time.get_ticks() - startPuzzleTime
         return
 
     #Check continue of knoppen worden geclicked
@@ -214,7 +212,7 @@ def keybindPuzzle():
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle ended
-        endPuzzleTime = pygame.time.get_ticks()
+        endPuzzleTime = pygame.time.get_ticks() -startPuzzleTime
         resetKeybindPuzzel()
         return
     
@@ -342,7 +340,7 @@ def mathsPuzzle():
                 scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
                 scenehandler.energyLevel = scenehandler.energyLevel + 20
                 #Gets time when puzzle ended
-                endPuzzleTime = pygame.time.get_ticks()
+                endPuzzleTime = pygame.time.get_ticks() - startPuzzleTime
                 #Resets asteroids
                 scenehandler.stopAsteroids = False
                 scenehandler.afterStopAsteroids = False
