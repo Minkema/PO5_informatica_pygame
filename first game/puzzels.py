@@ -102,13 +102,13 @@ def checkSolEerste():
     if(currentNum == 4):
         currentPuzzel = "none"
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
         scenehandler.energyLevel = scenehandler.energyLevel + 20
         ResetEerstePuzzel()
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle end
-        endPuzzleTime = pygame.time.get_ticks() - startPuzzleTime
+        endPuzzleTime = endPuzzleTime + pygame.time.get_ticks() - startPuzzleTime
         return
 
     #Check continue of knoppen worden geclicked
@@ -206,13 +206,13 @@ def keybindPuzzle():
     #Stops puzzle once correctly completed
     if (currentNum == 10):
         #increases score gain if puzzle has been completed succesfully
-        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+        scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
         scenehandler.energyLevel = scenehandler.energyLevel + 20
         currentPuzzel = "none"
         #sets score prior to level
         scenehandler.previousScore = scenehandler.currentScore
         #gets time when puzzle ended
-        endPuzzleTime = pygame.time.get_ticks() -startPuzzleTime
+        endPuzzleTime = endPuzzleTime + pygame.time.get_ticks() -startPuzzleTime
         resetKeybindPuzzel()
         return
     
@@ -337,10 +337,10 @@ def mathsPuzzle():
             if answerList[i] == correctNum:
                 currentPuzzel = "none"
                 #increases score gain if puzzle has been completed succesfully
-                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.5
+                scenehandler.scoreMultiplier = scenehandler.scoreMultiplier + 0.1
                 scenehandler.energyLevel = scenehandler.energyLevel + 20
                 #Gets time when puzzle ended
-                endPuzzleTime = pygame.time.get_ticks() - startPuzzleTime
+                endPuzzleTime = endPuzzleTime + pygame.time.get_ticks() - startPuzzleTime
                 #Resets asteroids
                 scenehandler.stopAsteroids = False
                 scenehandler.afterStopAsteroids = False

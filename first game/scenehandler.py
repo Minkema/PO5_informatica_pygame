@@ -66,6 +66,7 @@ def loadMainScene(resetValues):
         global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, asteroids, bullets, energyLevel, currentScore, speedMultiplier, scoreMultiplier
         #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
         startTime = pygame.time.get_ticks()
+        puzzels.endPuzzleTime = 0
 
         #Laatste tick wordt continue veranderd maar moet wel beginnen als de startijd begint daarom worden die hier aanelkaar gelijk gested
         laatsteTick = startTime
@@ -510,9 +511,9 @@ def showTimeScoreLevel(current_time):
 
         #calculates current score
         if puzzels.endPuzzleTime == 0:
-            currentScore = round((current_time - delayTime- loadedSceneTime) / 60 * scoreMultiplier, 0)
+            currentScore = round((current_time - delayTime- startTime) / 60 * scoreMultiplier, 0)
         else:
-            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime - loadedSceneTime) / 60 * scoreMultiplier, 0)
+            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime - startTime) / 60 * scoreMultiplier, 0)
 
         #Increases level once score threshold has been met
         if currentScore <= 500:
