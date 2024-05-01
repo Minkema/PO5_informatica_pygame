@@ -521,7 +521,6 @@ def showTimeScoreLevel(current_time):
         elif currentScore <= 1000 and currentScore >= 500:
             currentLevel = 2
             speedMultiplier = 1.5
-            loadScene("planet")
             #decreases interval of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
