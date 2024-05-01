@@ -60,12 +60,13 @@ def loadScene(scenename):
 
 def loadMainScene(resetValues):
     player.loadPlayer()
-    global background, interval, amountOfAsteroids
+    global background, interval, amountOfAsteroids, asteroids
 
     pygame.mixer.music.load('Audio\MainGame\MainGame.mp3')
+    asteroids = []
 
     if resetValues:
-        global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, asteroids, bullets, energyLevel, currentScore, speedMultiplier, scoreMultiplier
+        global isDead, startTime, laatsteTick, stopAsteroids, afterStopAsteroids, delayTime, bullets, energyLevel, currentScore, speedMultiplier, scoreMultiplier
         #Starttime is nodig zodat we kunnen uitrekenen hoelang de speler het heeft overleefd
         startTime = pygame.time.get_ticks()
 
@@ -77,7 +78,6 @@ def loadMainScene(resetValues):
         stopAsteroids = False
         afterStopAsteroids = False
         delayTime = 0
-        asteroids = []
         bullets = []
         energyLevel = 50
         currentScore = 0
