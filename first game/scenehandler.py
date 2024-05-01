@@ -26,6 +26,8 @@ retryTime = 0
 previousScore = 0
 amountOfAsteroids = 0
 currentLevel = 1
+currentScore = 0
+counter = 0
 previousLevel = 1
 
 Startbutton = 0
@@ -503,16 +505,14 @@ def checkCol():
         asteroids.pop(deletedAsteroids[i])
 
 def showTimeScoreLevel(current_time):
-    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime, interval, previousLevel, amountOfAsteroids, secondsTimer, previousScore
+    global currentScore, currentLevel, speedMultiplier, scoreMultiplier, startTime, delayTime, interval, previousLevel, amountOfAsteroids, secondsTimer, counter
 
-    #De timer moet niet worden laten zien als we bezig zijn met een puzzel
     if not stopAsteroids:
 
-        #calculates current score
-        if puzzels.endPuzzleTime == 0:
-            currentScore = round((current_time - delayTime- loadedSceneTime) / 60 * scoreMultiplier, 0)
-        else:
-            currentScore = previousScore + round((current_time - puzzels.endPuzzleTime - delayTime - loadedSceneTime) / 60 * scoreMultiplier, 0)
+        counter = counter + (0.2 * scoreMultiplier)
+        if counter >= 1:
+            counter = 0
+            currentScore = currentScore + 1
 
         #Increases level once score threshold has been met
         if currentScore <= 500:
