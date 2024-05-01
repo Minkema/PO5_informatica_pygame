@@ -78,6 +78,7 @@ def loadMainScene(resetValues):
         stopAsteroids = False
         afterStopAsteroids = False
         delayTime = 0
+
         bullets = []
         energyLevel = 50
         currentScore = 0
@@ -189,7 +190,7 @@ def loadGameOverScene():
     
 
 def LoadPlanetScene():
-    global planet, amountOfPlanets, survivalChance, landButton, continueButton
+    global planet, amountOfPlanets, survivalChance, landButton, continueButton, asteroids
     planet = Planet(settings.resolution[0] / 2, settings.resolution[1] / 2)
     amountOfPlanets = amountOfPlanets + 1
     maxChance = amountOfPlanets * 10
@@ -520,21 +521,21 @@ def showTimeScoreLevel(current_time):
             speedMultiplier = 1
         elif currentScore <= 1000 and currentScore >= 500:
             currentLevel = 2
-            speedMultiplier = 1.5
+            speedMultiplier = 1.3
             #decreases interval of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
                 interval = interval - 50
         elif currentScore <= 1500 and currentScore >= 1000:
             currentLevel = 3
-            speedMultiplier = 2
+            speedMultiplier = 1.8
             #decreases interval of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
                 interval = interval - 50
         elif currentScore <= 2000 and currentScore >= 1500:
             currentLevel = 4
-            speedMultiplier = 2.5
+            speedMultiplier = 2.2
             #decreases interval and amount of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
@@ -542,7 +543,7 @@ def showTimeScoreLevel(current_time):
                 amountOfAsteroids = amountOfAsteroids + 1
         elif currentScore <= 2500 and currentScore >= 2000:
             currentLevel = 5
-            speedMultiplier = 3
+            speedMultiplier = 2.5
             #decreases interval and amount of asteroid spawn
             if currentLevel == previousLevel + 1:
                 previousLevel = currentLevel
