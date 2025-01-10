@@ -57,6 +57,7 @@ def initGame():
         #updates the screen so you can see changes
         pygame.display.update()
         clock.tick(settings.fps)
+        print("hallo")
 
         #this handles all the types of events that can happen
         for event in pygame.event.get():
